@@ -9,7 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class YourmomsMouth extends SubsystemBase {
+public class YourmomsMouthSubsystem extends SubsystemBase {
 
   private final TalonSRX upper;
   private final TalonSRX lower;
@@ -17,7 +17,7 @@ public class YourmomsMouth extends SubsystemBase {
   private double lowerSpeed;
 
   /** Creates a new YourmomsMouth. */
-  public YourmomsMouth() {
+  public YourmomsMouthSubsystem() {
     upper = new TalonSRX(1);
     lower = new TalonSRX(2);
 
@@ -26,17 +26,24 @@ public class YourmomsMouth extends SubsystemBase {
   public void suckingIn() {
     upperSpeed = 1;
   }
-
   // Set upper speed
-
-  public void sigmaSpeed(double mmmama) {
-    upperSpeed = mmmama;
+ 
+  public void spitSpeed(double speed) {
+    upperSpeed = speed;
+    lowerSpeed = speed*0.5;
+    //supposed to be slower but idk by how much :skull:
+  }
+  public void gulpSpeed(double speed){
+    upperSpeed = speed;
+    lowerSpeed = speed*0.5;
+    //supposed ot be slower but idk how much :skull:
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     upper.set(TalonSRXControlMode.PercentOutput, upperSpeed);
+    lower.set(TalonSRXControlMode.PercentOutput, lowerSpeed);
 
   }
 }

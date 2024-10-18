@@ -3,7 +3,7 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.YourmomsMouth;
+import frc.robot.subsystems.YourmomsMouthSubsystem;
 
 import java.util.function.DoubleSupplier;
 
@@ -15,10 +15,10 @@ import frc.robot.subsystems.DrivebaseSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class YourmomsMouthCommand extends InstantCommand {
 
-    private final YourmomsMouth yourmomsMouth;
+    private final YourmomsMouthSubsystem yourmomsMouth;
 
     public YourmomsMouthCommand(
-            YourmomsMouth yourmomsMouth) {
+            YourmomsMouthSubsystem yourmomsMouth) {
         this.yourmomsMouth = yourmomsMouth;
         addRequirements(yourmomsMouth);
     }

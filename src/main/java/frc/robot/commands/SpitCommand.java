@@ -6,16 +6,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.YourmomsMouth;
+import frc.robot.subsystems.YourmomsMouthSubsystem;
 
-public class SuckIn extends Command {
+public class SpitCommand extends Command {
 
-  private YourmomsMouth why;
+  private YourmomsMouthSubsystem yourmomsMouthSubsystem;
 
   /** Creates a new SuckIn. */
-  public SuckIn(YourmomsMouth why) {
-    this.why = why;
+  public SpitCommand(YourmomsMouthSubsystem yourmomsMouthSubsystem) {
+    this.yourmomsMouthSubsystem = yourmomsMouthSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(yourmomsMouthSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -26,7 +27,7 @@ public class SuckIn extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    why.sigmaSpeed(Constants.Trumpy.sigmaspeed);
+    yourmomsMouthSubsystem.spitSpeed(Constants.Mouthy.SPITSPEED);
   }
 
   // Called once the command ends or is interrupted.

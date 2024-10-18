@@ -36,9 +36,9 @@ import java.util.List;
  */
 public final class Constants {
 
-  public static final class Trumpy {
-    public static final double sigmaspeed = 99999;
-    public static final double spitSpeed = 1;
+  public static final class Mouthy {
+    public static final double SPITSPEED = 1;
+    public static final double GULPSPEED = -1;
   }
 
   public static final class Config {

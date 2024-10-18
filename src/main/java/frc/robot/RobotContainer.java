@@ -28,12 +28,14 @@ import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.GulpCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
+import frc.robot.commands.SpitCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.DrivebaseSubsystem;
-import frc.robot.subsystems.YourmomsMouth;
+import frc.robot.subsystems.YourmomsMouthSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
@@ -54,7 +56,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
     private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
-    private final YourmomsMouth yourmomsMouth = new YourmomsMouth();
+    private final YourmomsMouthSubsystem yourmomsMouthSubsystem = new YourmomsMouthSubsystem();
 
     /** controller 1 */
     private final CommandXboxController jacob = new CommandXboxController(1);
@@ -198,13 +200,17 @@ public class RobotContainer {
                     translationYSupplier,
                     DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
     jacob
-        .b()
+        .leftBumper()
         .onTrue(
-            new YourmomsMouthCommand(
-                yourmomsMouth,
-
+            new SpitCommand(
+                yourmomsMouthSubsystem
             ));
-
+    jacob
+        .rightBumper()
+        .onTrue(
+            new GulpCommand(
+                yourmomsMouthSubsystem
+        ));
 
     // SOURCE
     anthony
