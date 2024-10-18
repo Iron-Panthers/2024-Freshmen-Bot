@@ -204,4 +204,9 @@ public final class Constants {
       public static final int EPSILON = 3;
     }
   }
+  public static final class Tongue {
+    public static final class Modes {
+      public static final TongueSubsystem.
+    }
+  }
 }
