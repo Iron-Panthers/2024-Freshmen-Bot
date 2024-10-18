@@ -4,6 +4,9 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.YourmomsMouth;
+
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DrivebaseSubsystem;
 
@@ -11,16 +14,18 @@ import frc.robot.subsystems.DrivebaseSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class YourmomsMouthCommand extends InstantCommand {
-    private final YourmomsMouth yourmomsMouthSubsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
 
-    private void addRequirements(YourmomsMouth yourmomsMouthSubsystem) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addRequirements'");
+    private final YourmomsMouth yourmomsMouth;
+
+    public YourmomsMouthCommand(
+            YourmomsMouth yourmomsMouth) {
+        this.yourmomsMouth = yourmomsMouth;
+        addRequirements(yourmomsMouth);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+
     }
 }

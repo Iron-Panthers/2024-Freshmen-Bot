@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,6 +13,8 @@ public class YourmomsMouth extends SubsystemBase {
 
   private final TalonSRX upper;
   private final TalonSRX lower;
+  private double upperSpeed;
+  private double lowerSpeed;
 
   /** Creates a new YourmomsMouth. */
   public YourmomsMouth() {
@@ -20,8 +23,20 @@ public class YourmomsMouth extends SubsystemBase {
 
   }
 
+  public void suckingIn() {
+    upperSpeed = 1;
+  }
+
+  // Set upper speed
+
+  public void sigmaSpeed(double mmmama) {
+    upperSpeed = mmmama;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    upper.set(TalonSRXControlMode.PercentOutput, upperSpeed);
+
   }
 }

@@ -36,6 +36,11 @@ import java.util.List;
  */
 public final class Constants {
 
+  public static final class Trumpy {
+    public static final double sigmaspeed = 99999;
+    public static final double spitSpeed = 1;
+  }
+
   public static final class Config {
     // maybe tune PID values?
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
@@ -160,10 +165,9 @@ public final class Constants {
         public static final int STEER_MOTOR = CAN.at(3, "module 1 steer motor");
         public static final int STEER_ENCODER = CAN.at(24, "module 1 steer encoder");
 
-        public static final double STEER_OFFSET =
-            IS_COMP_BOT
-                ? -0.003173828125 // comp bot offset
-                : 0.0595703125; // practice bot offset
+        public static final double STEER_OFFSET = IS_COMP_BOT
+            ? -0.003173828125 // comp bot offset
+            : 0.0595703125; // practice bot offset
       }
 
       public static final class Module2 { // back right
@@ -171,10 +175,9 @@ public final class Constants {
         public static final int STEER_MOTOR = CAN.at(10, "module 2 steer motor");
         public static final int STEER_ENCODER = CAN.at(25, "module 2 steer encoder");
 
-        public static final double STEER_OFFSET =
-            IS_COMP_BOT
-                ? 0.390380859375 // comp bot offset
-                : 0.262451171875; // practice bot offset
+        public static final double STEER_OFFSET = IS_COMP_BOT
+            ? 0.390380859375 // comp bot offset
+            : 0.262451171875; // practice bot offset
       }
 
       public static final class Module3 { // front right
@@ -182,10 +185,9 @@ public final class Constants {
         public static final int STEER_MOTOR = CAN.at(12, "module 3 steer motor");
         public static final int STEER_ENCODER = CAN.at(26, "module 3 steer encoder");
 
-        public static final double STEER_OFFSET =
-            IS_COMP_BOT
-                ? 0.4189453125 // comp bot offset
-                : -0.20825195312; // practice bot offset
+        public static final double STEER_OFFSET = IS_COMP_BOT
+            ? 0.4189453125 // comp bot offset
+            : -0.20825195312; // practice bot offset
       }
 
       public static final class Module4 { // front left
@@ -193,10 +195,9 @@ public final class Constants {
         public static final int STEER_MOTOR = CAN.at(1, "module 4 steer motor");
         public static final int STEER_ENCODER = CAN.at(27, "module 4 steer encoder");
 
-        public static final double STEER_OFFSET =
-            IS_COMP_BOT
-                ? -0.3408203125 // comp bot offset
-                : -0.3564453125 + 180; // practice bot offset
+        public static final double STEER_OFFSET = IS_COMP_BOT
+            ? -0.3408203125 // comp bot offset
+            : -0.3564453125 + 180; // practice bot offset
       }
     }
 
