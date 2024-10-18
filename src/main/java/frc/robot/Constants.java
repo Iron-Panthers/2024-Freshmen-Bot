@@ -23,24 +23,27 @@ import java.util.List;
 
 @SuppressWarnings("java:S1118")
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
 
   public static final class Config {
     // maybe tune PID values?
-    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG =
-        new HolonomicPathFollowerConfig(
-            new PIDConstants(20, 0, 0),
-            new PIDConstants(10, 0, 0),
-            Drive.MAX_VELOCITY_METERS_PER_SECOND,
-            Math.sqrt(Math.pow(Dims.TRACKWIDTH_METERS, 2) * 2),
-            new ReplanningConfig());
+    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
+        new PIDConstants(20, 0, 0),
+        new PIDConstants(10, 0, 0),
+        Drive.MAX_VELOCITY_METERS_PER_SECOND,
+        Math.sqrt(Math.pow(Dims.TRACKWIDTH_METERS, 2) * 2),
+        new ReplanningConfig());
 
     /** turn this off before comp. */
     public static final boolean SHOW_SHUFFLEBOARD_DEBUG_DATA = true;
@@ -51,11 +54,14 @@ public final class Constants {
     /** keep this on for pigeon, disable if absolutely necessary */
     public static final boolean FLIP_GYROSCOPE = true;
 
-    /** def turn this off unless you are using it, generates in excess of 100k rows for a match. */
+    /**
+     * def turn this off unless you are using it, generates in excess of 100k rows
+     * for a match.
+     */
     public static final boolean WRITE_APRILTAG_DATA = false;
 
-    public static final Path APRILTAG_DATA_PATH =
-        Filesystem.getDeployDirectory().toPath().resolve("poseEstimationsAtDistances.csv");
+    public static final Path APRILTAG_DATA_PATH = Filesystem.getDeployDirectory().toPath()
+        .resolve("poseEstimationsAtDistances.csv");
     public static final double REAL_X = 0.0;
     public static final double REAL_Y = 0.0;
   }
@@ -69,28 +75,28 @@ public final class Constants {
     public static final double MAX_VOLTAGE = 12.0;
     // maximum velocity
     // FIXME measure this value experimentally
-    public static final double MAX_VELOCITY_METERS_PER_SECOND =
-        6380.0 // falcon 500 free speed rpm
-            / 60.0
-            * 0.10033
-            * (1 / 6.12) // mk4i l3 16t falcon drive reduction (sourced from adrian)
-            * Math.PI;
+    public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 // falcon 500 free speed rpm
+        / 60.0
+        * 0.10033
+        * (1 / 6.12) // mk4i l3 16t falcon drive reduction (sourced from adrian)
+        * Math.PI;
     // theoretical value
     // FIXME measure and validate experimentally
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-        MAX_VELOCITY_METERS_PER_SECOND
-            / Math.hypot(Dims.TRACKWIDTH_METERS / 2.0, Dims.WHEELBASE_METERS / 2.0)
-            * .5;
+    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
+        / Math.hypot(Dims.TRACKWIDTH_METERS / 2.0, Dims.WHEELBASE_METERS / 2.0)
+        * .5;
 
     /** the maximum amount of angular error pid loops will tolerate for rotation */
     public static final double ANGULAR_ERROR = 1.0;
-    /** the minimum magnitude of the right stick for it to be used as a new rotation angle */
+    /**
+     * the minimum magnitude of the right stick for it to be used as a new rotation
+     * angle
+     */
     public static final double ROTATE_VECTOR_MAGNITUDE = .7;
 
     public static final class Dims {
       // FIXME validate with hardware
-      public static final double TRACKWIDTH_METERS =
-          .5207; // 20.5 inches (source: cad) converted to meters
+      public static final double TRACKWIDTH_METERS = .5207; // 20.5 inches (source: cad) converted to meters
       public static final double WHEELBASE_METERS = TRACKWIDTH_METERS; // robot is square
 
       public static final double BUMPER_WIDTH_METERS_X = .9779;
@@ -98,34 +104,34 @@ public final class Constants {
     }
 
     /*
-     module layout:
-        |──────
-     |->│#   ##steer motor
-     │  │  ##cancoder
-     │  │##drive motor
-     module number
-
-     steer is always left
-     from corner perspective
-
-     robot visualization:
-    |──────────────────────|
-    │2   10          04   1│
-    │  25              24  │
-    │11     S      D     03│
-    │     D          S     │
-    │                      │
-    │                      │
-    │     S          D     │
-    │       D      S       │
-    │12    |────────|    02│
-    │  26  │        │  27  │
-    │3   13│  batt  │01   4│
-    |──────┴───┬┬───┴──────|
-               ││
-               ││
-               ▼▼
-         software front
+     * module layout:
+     * |──────
+     * |->│# ##steer motor
+     * │ │ ##cancoder
+     * │ │##drive motor
+     * module number
+     * 
+     * steer is always left
+     * from corner perspective
+     * 
+     * robot visualization:
+     * |──────────────────────|
+     * │2 10 04 1│
+     * │ 25 24 │
+     * │11 S D 03│
+     * │ D S │
+     * │ │
+     * │ │
+     * │ S D │
+     * │ D S │
+     * │12 |────────| 02│
+     * │ 26 │ │ 27 │
+     * │3 13│ batt │01 4│
+     * |──────┴───┬┬───┴──────|
+     * ││
+     * ││
+     * ▼▼
+     * software front
      */
 
     public static final class Modules {
@@ -134,14 +140,12 @@ public final class Constants {
         public static final double COUPLING_GEAR_RATIO = 3.125;
         public static final double DRIVE_GEAR_RATIO = 5.357142857142857;
         public static final double STEER_GEAR_RATIO = 21.428571428571427;
-        public static final Slot0Configs DRIVE_MOTOR_GAINS =
-            new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0.32).withKV(0.11).withKA(0);
-        public static final Slot0Configs STEER_MOTOR_GAINS =
-            new Slot0Configs().withKP(11).withKI(0).withKD(0).withKS(0.4).withKV(0.6).withKA(0);
-        public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.Voltage;
-        public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT =
-            ClosedLoopOutputType.Voltage;
+        public static final Slot0Configs DRIVE_MOTOR_GAINS = new Slot0Configs().withKP(3).withKI(0).withKD(0)
+            .withKS(0.32).withKV(0.11).withKA(0);
+        public static final Slot0Configs STEER_MOTOR_GAINS = new Slot0Configs().withKP(11).withKI(0).withKD(0)
+            .withKS(0.4).withKV(0.6).withKA(0);
+        public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT = ClosedLoopOutputType.Voltage;
+        public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT = ClosedLoopOutputType.Voltage;
         public static final SteerFeedbackType FEEDBACK_SOURCE = SteerFeedbackType.FusedCANcoder;
         public static final double SPEED_TWELVE_VOLTS = MAX_VELOCITY_METERS_PER_SECOND;
         public static final double SLIP_CURRENT = 0; // optional, unused rn

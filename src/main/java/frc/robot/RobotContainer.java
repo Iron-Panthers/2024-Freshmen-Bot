@@ -33,6 +33,7 @@ import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.DrivebaseSubsystem;
+import frc.robot.subsystems.YourmomsMouth;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
@@ -41,114 +42,129 @@ import java.util.Map;
 import java.util.function.DoubleSupplier;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+    // The robot's subsystems and commands are defined here...
 
-  private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
+    private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
+    private final YourmomsMouth yourmomsMouth = new YourmomsMouth();
 
-  /** controller 1 */
-  private final CommandXboxController jacob = new CommandXboxController(1);
-  /** controller 1 layer */
-  private final Layer jacobLayer = new Layer(jacob.rightBumper());
-  /** controller 0 */
-  private final CommandXboxController anthony = new CommandXboxController(0);
-  /** controller 0 layer */
-  //   private final Layer anthonyLayer = new Layer(anthony.rightBumper());
+    /** controller 1 */
+    private final CommandXboxController jacob = new CommandXboxController(1);
+    /** controller 1 layer */
+    private final Layer jacobLayer = new Layer(jacob.rightBumper());
+    /** controller 0 */
+    private final CommandXboxController anthony = new CommandXboxController(0);
+    /** controller 0 layer */
+    // private final Layer anthonyLayer = new Layer(anthony.rightBumper());
 
-  /** the sendable chooser to select which auto to run. */
-  private final SendableChooser<Command> autoSelector;
+    /** the sendable chooser to select which auto to run. */
+    private final SendableChooser<Command> autoSelector;
 
-  private GenericEntry autoDelay;
+    private GenericEntry autoDelay;
 
-  private Pose2d desiredPose;
+    private Pose2d desiredPose;
 
-  private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
+    private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
-  /* drive joystick "y" is passed to x because controller is inverted */
-  private final DoubleSupplier translationXSupplier =
-      () -> (-modifyAxis(anthony.getLeftY()) * Drive.MAX_VELOCITY_METERS_PER_SECOND);
-  private final DoubleSupplier translationYSupplier =
-      () -> (-modifyAxis(anthony.getLeftX()) * Drive.MAX_VELOCITY_METERS_PER_SECOND);
+    /* drive joystick "y" is passed to x because controller is inverted */
+    private final DoubleSupplier translationXSupplier = () -> (-modifyAxis(anthony.getLeftY())
+            * Drive.MAX_VELOCITY_METERS_PER_SECOND);
+    private final DoubleSupplier translationYSupplier = () -> (-modifyAxis(anthony.getLeftX())
+            * Drive.MAX_VELOCITY_METERS_PER_SECOND);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Set up the default command for the drivetrain.
-    // The controls are for field-oriented driving:
-    // Left stick Y axis -> forward and backwards movement
-    // Left stick X axis -> left and right movement
-    // Right stick X axis -> rotation
-    drivebaseSubsystem.setDefaultCommand(
-        new DefaultDriveCommand(
-            drivebaseSubsystem,
-            translationXSupplier,
-            translationYSupplier,
-            // anthony.rightBumper(),
-            anthony.leftBumper()));
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        // Set up the default command for the drivetrain.
+        // The controls are for field-oriented driving:
+        // Left stick Y axis -> forward and backwards movement
+        // Left stick X axis -> left and right movement
+        // Right stick X axis -> rotation
+        drivebaseSubsystem.setDefaultCommand(
+                new DefaultDriveCommand(
+                        drivebaseSubsystem,
+                        translationXSupplier,
+                        translationYSupplier,
+                        // anthony.rightBumper(),
+                        anthony.leftBumper()));
 
-    // pivotSubsystem.setDefaultCommand(
-    //     new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
+        // pivotSubsystem.setDefaultCommand(
+        // new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
 
-    // Configure the button bindings
-    configureButtonBindings();
+        // Configure the button bindings
+        configureButtonBindings();
 
-    autoSelector = AutoBuilder.buildAutoChooser();
+        autoSelector = AutoBuilder.buildAutoChooser();
 
-    SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
-    SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
-    SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
+        SmartDashboard.putBoolean("is comp bot", MacUtil.IS_COMP_BOT);
+        SmartDashboard.putBoolean("show debug data", Config.SHOW_SHUFFLEBOARD_DEBUG_DATA);
+        SmartDashboard.putBoolean("don't init swerve modules", Config.DISABLE_SWERVE_INIT);
 
-    desiredPose = new Pose2d();
-    SmartDashboard.putString(
-        "desired pose",
-        String.format(
-            "(%2f %2f %2f)",
-            desiredPose.getX(), desiredPose.getY(), desiredPose.getRotation().getDegrees()));
+        desiredPose = new Pose2d();
+        SmartDashboard.putString(
+                "desired pose",
+                String.format(
+                        "(%2f %2f %2f)",
+                        desiredPose.getX(), desiredPose.getY(), desiredPose.getRotation().getDegrees()));
 
-    if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
-      driverView.addDouble("Drivebase Angle Error", () -> drivebaseSubsystem.getAngularError());
+        if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
+            driverView.addDouble("Drivebase Angle Error", () -> drivebaseSubsystem.getAngularError());
+        }
+
+        // Create and put autonomous selector to dashboard
+        setupAutonomousCommands();
     }
 
-    // Create and put autonomous selector to dashboard
-    setupAutonomousCommands();
-  }
+    /**
+     * Use this method to do things as the drivers gain control of the robot. We use
+     * it to vibrate the
+     * driver b controller to notice accidental swaps.
+     *
+     * <p>
+     * Please use this very, very sparingly. It doesn't exist by default for good
+     * reason.
+     */
+    public void containerTeleopInit() {
+        // runs when teleop happens
+        CommandScheduler.getInstance().schedule(new VibrateHIDCommand(jacob.getHID(), 5, .5));
+        // vibrate controller at 27 seconds left
+        CommandScheduler.getInstance()
+                .schedule(
+                        new WaitCommand(108)
+                                .andThen(
+                                        new ParallelCommandGroup(
+                                                new VibrateHIDCommand(anthony.getHID(), 3, 0.4),
+                                                new VibrateHIDCommand(jacob.getHID(), 3, 0.4))));
+    }
 
-  /**
-   * Use this method to do things as the drivers gain control of the robot. We use it to vibrate the
-   * driver b controller to notice accidental swaps.
-   *
-   * <p>Please use this very, very sparingly. It doesn't exist by default for good reason.
-   */
-  public void containerTeleopInit() {
-    // runs when teleop happens
-    CommandScheduler.getInstance().schedule(new VibrateHIDCommand(jacob.getHID(), 5, .5));
-    // vibrate controller at 27 seconds left
-    CommandScheduler.getInstance()
-        .schedule(
-            new WaitCommand(108)
-                .andThen(
-                    new ParallelCommandGroup(
-                        new VibrateHIDCommand(anthony.getHID(), 3, 0.4),
-                        new VibrateHIDCommand(jacob.getHID(), 3, 0.4))));
-  }
-
-  /**
-   * Use this method to do things as soon as the robot starts being used. We use it to stop doing
-   * things that could be harmful or undesirable during game play--rebooting the network switch is a
-   * good example. Subsystems need to be explicitly wired up to this method.
-   *
-   * <p>Depending on which mode the robot is enabled in, this will either be called before auto or
-   * before teleop, whichever is first.
-   *
-   * <p>Please use this very, very sparingly. It doesn't exist by default for good reason.
-   */
-  public void containerMatchStarting() {
-    // runs when the match starts
-  }
+    /**
+     * Use this method to do things as soon as the robot starts being used. We use
+     * it to stop doing
+     * things that could be harmful or undesirable during game play--rebooting the
+     * network switch is a
+     * good example. Subsystems need to be explicitly wired up to this method.
+     *
+     * <p>
+     * Depending on which mode the robot is enabled in, this will either be called
+     * before auto or
+     * before teleop, whichever is first.
+     *
+     * <p>
+     * Please use this very, very sparingly. It doesn't exist by default for good
+     * reason.
+     */
+    public void containerMatchStarting() {
+        // runs when the match starts
+    }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -181,6 +197,14 @@ public class RobotContainer {
                     translationXSupplier,
                     translationYSupplier,
                     DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
+    jacob
+        .b()
+        .onTrue(
+            new YourmomsMouthCommand(
+                yourmomsMouth,
+
+            ));
+
 
     // SOURCE
     anthony
@@ -261,56 +285,56 @@ public class RobotContainer {
                 anthony.rightBumper()));
   }
 
-  /**
-   * Adds all autonomous routines to the autoSelector, and places the autoSelector on Shuffleboard.
-   */
-  private void setupAutonomousCommands() {
-    driverView.addString("NOTES", () -> "...win?\nor not.").withSize(4, 1).withPosition(7, 2);
+    /**
+     * Adds all autonomous routines to the autoSelector, and places the autoSelector
+     * on Shuffleboard.
+     */
+    private void setupAutonomousCommands() {
+        driverView.addString("NOTES", () -> "...win?\nor not.").withSize(4, 1).withPosition(7, 2);
 
-    driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
+        driverView.add("auto selector", autoSelector).withSize(4, 1).withPosition(7, 0);
 
-    autoDelay =
-        driverView
-            .add("auto delay", 0)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 15, "block increment", .1))
-            .withSize(4, 1)
-            .withPosition(7, 1)
-            .getEntry();
-  }
+        autoDelay = driverView
+                .add("auto delay", 0)
+                .withWidget(BuiltInWidgets.kNumberSlider)
+                .withProperties(Map.of("min", 0, "max", 15, "block increment", .1))
+                .withSize(4, 1)
+                .withPosition(7, 1)
+                .getEntry();
+    }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    double delay = autoDelay.getDouble(0);
-    return delay == 0
-        ? autoSelector.getSelected()
-        : new WaitCommand(delay).andThen(autoSelector.getSelected());
-  }
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        double delay = autoDelay.getDouble(0);
+        return delay == 0
+                ? autoSelector.getSelected()
+                : new WaitCommand(delay).andThen(autoSelector.getSelected());
+    }
 
-  /**
-   * applies deadband and squares axis
-   *
-   * @param value the axis value to be modified
-   * @return the modified axis values
-   */
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = ControllerUtil.deadband(value, 0.07);
+    /**
+     * applies deadband and squares axis
+     *
+     * @param value the axis value to be modified
+     * @return the modified axis values
+     */
+    private static double modifyAxis(double value) {
+        // Deadband
+        value = ControllerUtil.deadband(value, 0.07);
 
-    // Square the axis
-    value = Math.copySign(value * value, value);
+        // Square the axis
+        value = Math.copySign(value * value, value);
 
-    return value;
-  }
+        return value;
+    }
 
-  private static DoubleSupplier exponential(DoubleSupplier supplier, double exponential) {
-    return () -> {
-      double val = supplier.getAsDouble();
-      return Math.copySign(Math.pow(val, exponential), val);
-    };
-  }
+    private static DoubleSupplier exponential(DoubleSupplier supplier, double exponential) {
+        return () -> {
+            double val = supplier.getAsDouble();
+            return Math.copySign(Math.pow(val, exponential), val);
+        };
+    }
 }
