@@ -296,6 +296,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
           swerveModules[3].getPosition(false),
         };
   }
+  public double getTargetAngle(){
+    return targetAngle;
+  }
 
   private Rotation2d driverGyroOffset = Rotation2d.fromDegrees(0);
 
