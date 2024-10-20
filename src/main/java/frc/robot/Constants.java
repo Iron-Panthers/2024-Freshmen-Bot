@@ -63,7 +63,8 @@ public final class Constants {
   public static final class Drive {
     public static final int PIGEON_PORT = 0; // placeholder
     public static final String SWERVE_CANBUS = "rio"; // placeholder
-
+    /**joystick xbox controller deadband**/
+    public static final double DEADBAND = 0.07;
     // max voltage delivered to drivebase
     // supposedly useful to limit speed for testing
     public static final double MAX_VOLTAGE = 12.0;
@@ -83,7 +84,7 @@ public final class Constants {
             * .5;
 
     /** the maximum amount of angular error pid loops will tolerate for rotation */
-    public static final double ANGULAR_ERROR = 1.0;
+    public static final double ANGULAR_ERROR = 0.1;
     /** the minimum magnitude of the right stick for it to be used as a new rotation angle */
     public static final double ROTATE_VECTOR_MAGNITUDE = .7;
 
