@@ -20,13 +20,13 @@ import frc.util.Util;
 
 public class TongueSubsystem extends SubsystemBase {
     
+    private final 
     private final TalonSRX tonguemotor;   
     public enum Modes {
         INTAKE,
         OUTTAKE
     }
     public enum TongueMode {
-        
         public final TonguePowers tonguePowers;
         private TongueMode(TonguePowers tonguePowers) {
             this.tonguePowers = tonguePowers;
@@ -34,18 +34,16 @@ public class TongueSubsystem extends SubsystemBase {
     }
 
     public record TonguePowers(double roller, double accelerator) {
-        public TonguePowers(double roller, double accelerator){
+        public TonguePowers(double roller){
             this.roller = roller;
-            this.accelerator = accelerator;
         }
     }
-
     public TongueSubsystem() {
         tonguemotor = new TalonSRX(3);
-
-    }
   
+    }
 }
  
+
 
 
