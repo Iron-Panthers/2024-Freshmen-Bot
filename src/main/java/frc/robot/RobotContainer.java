@@ -204,14 +204,24 @@ public class RobotContainer {
                                 DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
         jacob
                 .leftBumper()
-                .onTrue(
+                .whileTrue(
                         new ShootCommand(
-                                shooterSubsystem));
+                                shooterSubsystem, false));
         jacob
                 .rightBumper()
-                .onTrue(
+                .whileTrue(
                         new IntakeCommand(
-                                shooterSubsystem));
+                                shooterSubsystem,false));
+        jacob
+                .rightTrigger()
+                .whileTrue(
+                        new IntakeCommand(
+                                shooterSubsystem,true));
+        jacob
+                .leftTrigger()
+                .whileTrue(
+                        new ShootCommand(
+                                shooterSubsystem, true));
 
         // SOURCE
         anthony

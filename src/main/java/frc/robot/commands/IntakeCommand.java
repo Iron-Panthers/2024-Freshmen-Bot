@@ -10,11 +10,13 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class IntakeCommand extends Command {
 
-  ShooterSubsystem shooterSubsystem;
+  private ShooterSubsystem shooterSubsystem;
+  private boolean amp;
 
   /** Creates a new SuckIn. */
-  public IntakeCommand(ShooterSubsystem shooterSubsystem) {
+  public IntakeCommand(ShooterSubsystem shooterSubsystem, boolean amp) {
     this.shooterSubsystem = shooterSubsystem;
+    this.amp = amp;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooterSubsystem);
   }
@@ -22,17 +24,18 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    shooterSubsystem.setSpeed(Constants.Mouthy.INTAKE_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.intakeSpeed(Constants.Mouthy.INTAKE_SPEED);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    shooterSubsystem.setSpeed(amp? Constants.Mouthy.SHOOT_AMP_SPEED_UPPER :Constants.Mouthy.SHOOT_SPEAKER_SPEED, 0);
   }
 
   // Returns true when the command should end.

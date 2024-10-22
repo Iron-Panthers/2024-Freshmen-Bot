@@ -6,42 +6,47 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-  private final TalonSRX upper;
-  private final TalonSRX lower;
+  private final TalonFX upper;
+  private final TalonFX lower;
   private double upperSpeed;
   private double lowerSpeed;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-    upper = new TalonSRX(1);
-    lower = new TalonSRX(2);
+    upper = new TalonFX(60);
+    lower = new TalonFX(20);
+    lower.clearStickyFaults();
+    upper.clearStickyFaults();
+
+
+
 
   }
 
   // Set upper speed
 
-  public void shootSpeed(double speed) {
-    upperSpeed = speed;
-    lowerSpeed = speed * 0.5;
+  public void setSpeed(double upperSpeed, double lowerSpeed) {
+    this.upperSpeed = upperSpeed;
+    this.lowerSpeed = lowerSpeed;
     // supposed to be slower but idk by how much :skull:
   }
-
-  public void intakeSpeed(double speed) {
-    upperSpeed = speed;
-    lowerSpeed = speed * 0.5;
-    // supposed ot be slower but idk how much :skull:
+  public void setSpeed(double speed) {
+    this.upperSpeed = speed;
+    this.lowerSpeed = speed;
+    // supposed to be slower but idk by how much :skull:
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    upper.set(TalonSRXControlMode.PercentOutput, upperSpeed);
-    lower.set(TalonSRXControlMode.PercentOutput, lowerSpeed);
+    upper.setVoltage(upperSpeed);
+    lower.setVoltage(lowerSpeed);
 
   }
 }
