@@ -19,17 +19,19 @@ public class AmpIntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+        ampSubsystem.setAmpMode(AmpMode.INTAKE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ampSubsystem.setAmpMode(AmpMode.INTAKE);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    ampSubsystem.setAmpMode(AmpMode.IDLE);
+  }
 
   // Returns true when the command should end.
   @Override

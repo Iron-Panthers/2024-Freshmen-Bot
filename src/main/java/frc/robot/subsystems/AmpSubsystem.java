@@ -44,10 +44,10 @@ public class AmpSubsystem extends SubsystemBase {
                 power = 0;
                 break;
             case INTAKE:
-                power = 1;
+                power = 0.5;
                 break;
             case OUTTAKE:
-                power = -1;
+                power = -0.5;
                 break;
         }
 
