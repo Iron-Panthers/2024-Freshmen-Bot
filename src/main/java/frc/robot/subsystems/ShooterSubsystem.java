@@ -9,34 +9,32 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class YourmomsMouthSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase {
 
   private final TalonSRX upper;
   private final TalonSRX lower;
   private double upperSpeed;
   private double lowerSpeed;
 
-  /** Creates a new YourmomsMouth. */
-  public YourmomsMouthSubsystem() {
+  /** Creates a new ShooterSubsystem. */
+  public ShooterSubsystem() {
     upper = new TalonSRX(1);
     lower = new TalonSRX(2);
 
   }
 
-  public void suckingIn() {
-    upperSpeed = 1;
-  }
   // Set upper speed
- 
-  public void spitSpeed(double speed) {
+
+  public void shootSpeed(double speed) {
     upperSpeed = speed;
-    lowerSpeed = speed*0.5;
-    //supposed to be slower but idk by how much :skull:
+    lowerSpeed = speed * 0.5;
+    // supposed to be slower but idk by how much :skull:
   }
-  public void gulpSpeed(double speed){
+
+  public void intakeSpeed(double speed) {
     upperSpeed = speed;
-    lowerSpeed = speed*0.5;
-    //supposed ot be slower but idk how much :skull:
+    lowerSpeed = speed * 0.5;
+    // supposed ot be slower but idk how much :skull:
   }
 
   @Override

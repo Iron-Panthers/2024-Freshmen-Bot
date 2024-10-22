@@ -28,14 +28,15 @@ import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.GulpCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
-import frc.robot.commands.SpitCommand;
+import frc.robot.commands.ShootCommand;
+// import frc.robot.commands.SpitCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.DrivebaseSubsystem;
-import frc.robot.subsystems.YourmomsMouthSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
@@ -56,7 +57,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
     private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
-    private final YourmomsMouthSubsystem yourmomsMouthSubsystem = new YourmomsMouthSubsystem();
+    private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
     /** controller 1 */
     private final CommandXboxController jacob = new CommandXboxController(1);
@@ -168,128 +169,126 @@ public class RobotContainer {
         // runs when the match starts
     }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    // vibrate jacob controller when in layer
-    jacobLayer.whenChanged(
-        (enabled) -> {
-          final double power = enabled ? .1 : 0;
-          jacob.getHID().setRumble(RumbleType.kLeftRumble, power);
-          jacob.getHID().setRumble(RumbleType.kRightRumble, power);
-        });
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
+     * instantiating a {@link GenericHID} or one of its subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+     * it to a {@link
+     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
+        // vibrate jacob controller when in layer
+        jacobLayer.whenChanged(
+                (enabled) -> {
+                    final double power = enabled ? .1 : 0;
+                    jacob.getHID().setRumble(RumbleType.kLeftRumble, power);
+                    jacob.getHID().setRumble(RumbleType.kRightRumble, power);
+                });
 
-    anthony
-        .start()
-        .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
+        anthony
+                .start()
+                .onTrue(new InstantCommand(drivebaseSubsystem::zeroGyroscope, drivebaseSubsystem));
 
-    jacob
-        .start()
-        .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
+        jacob
+                .start()
+                .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-    jacob
-        .a()
-        .onTrue(
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem,
-                    translationXSupplier,
-                    translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
-    jacob
-        .leftBumper()
-        .onTrue(
-            new SpitCommand(
-                yourmomsMouthSubsystem
-            ));
-    jacob
-        .rightBumper()
-        .onTrue(
-            new GulpCommand(
-                yourmomsMouthSubsystem
-        ));
+        jacob
+                .a()
+                .onTrue(
+                        new RotateAngleDriveCommand(
+                                drivebaseSubsystem,
+                                translationXSupplier,
+                                translationYSupplier,
+                                DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
+        jacob
+                .leftBumper()
+                .onTrue(
+                        new ShootCommand(
+                                shooterSubsystem));
+        jacob
+                .rightBumper()
+                .onTrue(
+                        new IntakeCommand(
+                                shooterSubsystem));
 
-    // SOURCE
-    anthony
-        .y()
-        .onTrue(
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem,
-                    translationXSupplier,
-                    translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Red)
-                        ? -Setpoints.SOURCE_DEGREES
-                        : Setpoints.SOURCE_DEGREES));
+        // SOURCE
+        anthony
+                .y()
+                .onTrue(
+                        new RotateAngleDriveCommand(
+                                drivebaseSubsystem,
+                                translationXSupplier,
+                                translationYSupplier,
+                                DriverStation.getAlliance().get().equals(Alliance.Red)
+                                        ? -Setpoints.SOURCE_DEGREES
+                                        : Setpoints.SOURCE_DEGREES));
 
-    // SPEAKER FROM STAGE
-    anthony
-        .b()
-        .onTrue(
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem,
-                    translationXSupplier,
-                    translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Red)
-                        ? -Setpoints.SPEAKER_DEGREES
-                        : Setpoints.SPEAKER_DEGREES));
+        // SPEAKER FROM STAGE
+        anthony
+                .b()
+                .onTrue(
+                        new RotateAngleDriveCommand(
+                                drivebaseSubsystem,
+                                translationXSupplier,
+                                translationYSupplier,
+                                DriverStation.getAlliance().get().equals(Alliance.Red)
+                                        ? -Setpoints.SPEAKER_DEGREES
+                                        : Setpoints.SPEAKER_DEGREES));
 
-    // AMP
-    jacob
-        .b()
-        .onTrue(
-            new RotateAngleDriveCommand(
-                    drivebaseSubsystem,
-                    translationXSupplier,
-                    translationYSupplier,
-                    DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
+        // AMP
+        jacob
+                .b()
+                .onTrue(
+                        new RotateAngleDriveCommand(
+                                drivebaseSubsystem,
+                                translationXSupplier,
+                                translationYSupplier,
+                                DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
 
-    /*    jacob
-            .a()
-            .onTrue(
-                new RotateAngleDriveCommand(
-                        drivebaseSubsystem,
-                        translationXSupplier,
-                        translationYSupplier,
-                        DriverStation.getAlliance().get().equals(Alliance.Red) ? 90 : -90)
-                    .alongWith(new PivotAngleCommand(pivotSubsystem, 138)) // FIXME idk
-                    .alongWith(new ShooterRampUpCommand(shooterSubsystem, ShooterMode.RAMP_AMP_FRONT)));
-    */
-    
-    DoubleSupplier rotation =
-        exponential(
-            () ->
-                ControllerUtil.deadband(
-                    (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
-            2);
+        /*
+         * jacob
+         * .a()
+         * .onTrue(
+         * new RotateAngleDriveCommand(
+         * drivebaseSubsystem,
+         * translationXSupplier,
+         * translationYSupplier,
+         * DriverStation.getAlliance().get().equals(Alliance.Red) ? 90 : -90)
+         * .alongWith(new PivotAngleCommand(pivotSubsystem, 138)) // FIXME idk
+         * .alongWith(new ShooterRampUpCommand(shooterSubsystem,
+         * ShooterMode.RAMP_AMP_FRONT)));
+         */
 
-    DoubleSupplier rotationVelocity =
-        () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
+        DoubleSupplier rotation = exponential(
+                () -> ControllerUtil.deadband(
+                        (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
+                2);
 
-    new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
-        .whileTrue(
-            new RotateVelocityDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                rotationVelocity,
-                anthony.rightBumper()));
+        DoubleSupplier rotationVelocity = () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                * 0.8;
 
-    new Trigger(
-            () ->
-                Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX())
-                    > Drive.ROTATE_VECTOR_MAGNITUDE)
-        .onTrue(
-            new RotateVectorDriveCommand(
-                drivebaseSubsystem,
-                translationXSupplier,
-                translationYSupplier,
-                anthony::getRightY,
-                anthony::getRightX,
-                anthony.rightBumper()));
-  }
+        new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
+                .whileTrue(
+                        new RotateVelocityDriveCommand(
+                                drivebaseSubsystem,
+                                translationXSupplier,
+                                translationYSupplier,
+                                rotationVelocity,
+                                anthony.rightBumper()));
+
+        new Trigger(
+                () -> Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX()) > Drive.ROTATE_VECTOR_MAGNITUDE)
+                .onTrue(
+                        new RotateVectorDriveCommand(
+                                drivebaseSubsystem,
+                                translationXSupplier,
+                                translationYSupplier,
+                                anthony::getRightY,
+                                anthony::getRightX,
+                                anthony.rightBumper()));
+    }
 
     /**
      * Adds all autonomous routines to the autoSelector, and places the autoSelector

@@ -6,17 +6,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.YourmomsMouthSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
-public class GulpCommand extends Command {
+public class IntakeCommand extends Command {
 
-  YourmomsMouthSubsystem yourmomsMouthSubsystem;
+  ShooterSubsystem shooterSubsystem;
 
   /** Creates a new SuckIn. */
-  public GulpCommand(YourmomsMouthSubsystem yourmomsMouthSubsystem) {
-    this.yourmomsMouthSubsystem = yourmomsMouthSubsystem;
+  public IntakeCommand(ShooterSubsystem shooterSubsystem) {
+    this.shooterSubsystem = shooterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(yourmomsMouthSubsystem);
+    addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -27,7 +27,7 @@ public class GulpCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    yourmomsMouthSubsystem.gulpSpeed(Constants.Mouthy.GULPSPEED);
+    shooterSubsystem.intakeSpeed(Constants.Mouthy.INTAKE_SPEED);
   }
 
   // Called once the command ends or is interrupted.
