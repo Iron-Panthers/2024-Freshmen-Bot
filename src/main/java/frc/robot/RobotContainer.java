@@ -33,7 +33,7 @@ import frc.robot.commands.RotateVectorDriveCommand;
 import frc.robot.commands.RotateVelocityDriveCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.DrivebaseSubsystem;
-import frc.robot.subsystems.TongueSubsystem;
+import frc.robot.subsystems.AmpSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
 import frc.util.MacUtil;
@@ -51,7 +51,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
-  private final TongueSubsystem tongueSubsystem = new TongueSubsystem();
+  private final AmpSubsystem ampSubsystem = new AmpSubsystem();
 
   /** controller 1 */
   private final CommandXboxController jacob = new CommandXboxController(1);

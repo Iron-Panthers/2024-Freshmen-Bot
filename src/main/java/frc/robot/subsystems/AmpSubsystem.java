@@ -15,42 +15,42 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive.Dims;
-import frc.robot.Constants.Tongue;
-import frc.robot.commands.TongueCommand;
+import frc.robot.Constants.Amp;
+import frc.robot.commands.AmpCommand;
 import frc.robot.subsystems.DrivebaseSubsystem.Modes;
 import frc.util.Util;
 
-public class TongueSubsystem extends SubsystemBase {
-    private final TalonSRX tongueMotor;  
-    private TongueMode tongueMode; 
-    public enum TongueMode {
-        INTAKE(Tongue.Modes.INTAKE),
-        IDLE(Tongue.Modes.IDLE),
-        OUTTAKE(Tongue.Modes.OUTTAKE);
-        public final TonguePowers tonguePowers;
-        private TongueMode(TonguePowers tonguePowers) {
-            this.tonguePowers = tonguePowers;
+public class AmpSubsystem extends SubsystemBase {
+    private final TalonSRX ampMotor;  
+    private AmpMode ampMode; 
+    public enum AmpMode {
+        INTAKE(Amp.Modes.INTAKE),
+        IDLE(Amp.Modes.IDLE),
+        OUTTAKE(Amp.Modes.OUTTAKE);
+        public final AmpPowers ampPowers;
+        private AmpMode(AmpPowers ampPowers) {
+            this.ampPowers = ampPowers;
         }
+    }
 
-    public record TonguePowers(double roller) {
-        public TonguePowers(double roller){
+    public record AmpPowers(double roller) {
+        public AmpPowers(double roller){
             this.roller = roller;
         }
     }
 
-    public TongueSubsystem() {
-        tongueMotor = new TalonSRX(Tongue.Ports.CANCODER_PORT);
-        tongueMode = TongueMode.IDLE();
+    public void AmpSubsystem() { 
+        ampMotor = new TalonSRX(Amp.Ports.CANCODER_PORT);
+        ampMode = AmpMode.IDLE();
   
     }
-    public void setTongueMode(TongueMode tongueMode) {
-        this.tongueMode = tongueMode;
+    public void setAmpMode(AmpMode ampMode) {
+        this.ampMode = ampMode;
       }
     @Override
     public void periodic() {
-    tongueMotor.set(tongueMode.tonguePowers.roller());
+    ampMotor.set(ampMode.ampPowers.roller());
     }
- }
 }
 
 
