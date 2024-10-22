@@ -17,6 +17,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants.Drive.Dims;
+import frc.robot.subsystems.TongueSubsystem;
 import frc.util.CAN;
 import java.nio.file.Path;
 import java.util.List;
@@ -205,8 +206,17 @@ public final class Constants {
     }
   }
   public static final class Tongue {
-    public static final class Modes {
-      public static final TongueSubsystem.
-    }
+      public static final class Ports {
+        //TODO: ADD THE GOSH DANG PORT NUMBERS AND CHANGE THE PORT NAMES
+        public static final int PIVOT_MOTOR_PORT = 18;
+        public static final int CANCODER_PORT = 28;
+        public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
+      }
+  }
+  public static final class Modes {
+    public static final TongueSubsystem.TonguePowers INTAKE =
+        new TongueSubsystem.TonguePowers(0,0);
+    public static final TongueSubsystem.TonguePowers OUTTAKE =
+        new TongueSubsystem.TonguePowers(0,0);
   }
 }
