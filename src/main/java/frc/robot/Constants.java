@@ -208,17 +208,15 @@ public final class Constants {
   public static final class Amp {
       public static final class Ports {
         //TODO: ADD THE GOSH DANG PORT NUMBERS AND CHANGE THE PORT NAMES
-        public static final int PIVOT_MOTOR_PORT = 18;
-        public static final int CANCODER_PORT = 28;
-        public static final int INDUCTIVE_PROXIMITY_SENSOR_PORT = 30;
+        public static final int AMP_MOTOR_PORT = 14;
       }
-  }
-  public static final class Modes { //These are placeholder values
-    public static final AmpSubsystem.AmpPowers INTAKE =
-        new AmpSubsystem.AmpPowers(0,0);
-    public static final AmpSubsystem.AmpPowers OUTTAKE =
-        new AmpSubsystem.AmpPowers(0,0);
-    public static final AmpSubsystem.AmpPowers IDLE =
-        new AmpSubsystem.AmpPowers(0,0);
+      public static final class Modes {
+        public static final AmpSubsystem.AmpPowers INTAKE = 
+          new AmpSubsystem.AmpPowers(0);
+        public static final AmpSubsystem.AmpPowers OUTTAKE = 
+          new AmpSubsystem.AmpPowers(0);
+        public static final AmpSubsystem.AmpPowers IDLE = 
+          new AmpSubsystem.AmpPowers(0);
+      }
   }
 }

@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
@@ -24,33 +24,38 @@ public class AmpSubsystem extends SubsystemBase {
     private final TalonSRX ampMotor;  
     private AmpMode ampMode; 
     public enum AmpMode {
-        INTAKE(Amp.Modes.INTAKE),
-        IDLE(Amp.Modes.IDLE),
-        OUTTAKE(Amp.Modes.OUTTAKE);
-        public final AmpPowers ampPowers;
-        private AmpMode(AmpPowers ampPowers) {
-            this.ampPowers = ampPowers;
+        INTAKE,
+        IDLE,
+        OUTTAKE;
+    }
+
+    public record AmpPowers(double intakeSpeed) {
+        public AmpPowers(double intakeSpeed) {
+            this.intakeSpeed = intakeSpeed;
         }
     }
 
-    public record AmpPowers(double roller) {
-        public AmpPowers(double roller){
-            this.roller = roller;
-        }
-    }
-
-    public void AmpSubsystem() { 
-        ampMotor = new TalonSRX(Amp.Ports.CANCODER_PORT);
-        ampMode = AmpMode.IDLE();
-  
+    public AmpSubsystem() { 
+        ampMotor = new TalonSRX(Amp.Ports.AMP_MOTOR_PORT);
+        ampMode = AmpMode.IDLE;
     }
     public void setAmpMode(AmpMode ampMode) {
         this.ampMode = ampMode;
       }
     @Override
     public void periodic() {
-    ampMotor.set(ampMode.ampPowers.roller());
+        switch (ampMode) {
+            case IDLE: {
+                ampMode = AmpMode.IDLE;
+            }
+            case INTAKE: {
+                ampMode = AmpMode.INTAKE;
+            }
+            case OUTTAKE: {
+                ampMode = AmpMode.OUTTAKE;
+            }
+        }
+
+    ampMotor.set(ampMode.roller(), 0);
     }
 }
-
-
