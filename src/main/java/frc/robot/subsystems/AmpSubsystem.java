@@ -29,12 +29,6 @@ public class AmpSubsystem extends SubsystemBase {
         OUTTAKE;
     }
 
-    public record AmpPowers(double intakeSpeed) {
-        public AmpPowers(double intakeSpeed) {
-            this.intakeSpeed = intakeSpeed;
-        }
-    }
-
     public AmpSubsystem() { 
         ampMotor = new TalonSRX(Amp.Ports.AMP_MOTOR_PORT);
         ampMode = AmpMode.IDLE;
@@ -44,18 +38,19 @@ public class AmpSubsystem extends SubsystemBase {
       }
     @Override
     public void periodic() {
+        double power = 0;
         switch (ampMode) {
-            case IDLE: {
-                ampMode = AmpMode.IDLE;
-            }
-            case INTAKE: {
-                ampMode = AmpMode.INTAKE;
-            }
-            case OUTTAKE: {
-                ampMode = AmpMode.OUTTAKE;
-            }
+            case IDLE:
+                power = 0;
+                break;
+            case INTAKE:
+                power = 1;
+                break;
+            case OUTTAKE:
+                power = -1;
+                break;
         }
 
-    ampMotor.set(ampMode.roller(), 0);
+    ampMotor.set(TalonSRXControlMode.PercentOutput, power);
     }
 }

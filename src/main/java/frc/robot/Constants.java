@@ -210,13 +210,5 @@ public final class Constants {
         //TODO: ADD THE GOSH DANG PORT NUMBERS AND CHANGE THE PORT NAMES
         public static final int AMP_MOTOR_PORT = 14;
       }
-      public static final class Modes {
-        public static final AmpSubsystem.AmpPowers INTAKE = 
-          new AmpSubsystem.AmpPowers(0);
-        public static final AmpSubsystem.AmpPowers OUTTAKE = 
-          new AmpSubsystem.AmpPowers(0);
-        public static final AmpSubsystem.AmpPowers IDLE = 
-          new AmpSubsystem.AmpPowers(0);
-      }
   }
 }
