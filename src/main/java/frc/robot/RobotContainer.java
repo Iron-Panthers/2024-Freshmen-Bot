@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AmpIntakeCommand;
+import frc.robot.commands.AmpOuttakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
@@ -217,7 +219,16 @@ public class RobotContainer {
                     translationXSupplier,
                     translationYSupplier,
                     DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
+    
+    jacob
+        .leftBumper()
+        .whileTrue(
+            new AmpIntakeCommand(ampSubsystem));
 
+    jacob
+        .rightBumper()
+        .whileTrue(
+            new AmpOuttakeCommand(ampSubsystem));
     /*    jacob
             .a()
             .onTrue(

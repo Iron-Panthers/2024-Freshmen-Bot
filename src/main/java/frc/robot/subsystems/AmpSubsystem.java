@@ -16,7 +16,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive.Dims;
 import frc.robot.Constants.Amp;
-import frc.robot.commands.AmpCommand;
+import frc.robot.commands.AmpOuttakeCommand;
 import frc.robot.subsystems.DrivebaseSubsystem.Modes;
 import frc.util.Util;
 
@@ -35,7 +35,7 @@ public class AmpSubsystem extends SubsystemBase {
     }
     public void setAmpMode(AmpMode ampMode) {
         this.ampMode = ampMode;
-      }
+    }
     @Override
     public void periodic() {
         double power = 0;
