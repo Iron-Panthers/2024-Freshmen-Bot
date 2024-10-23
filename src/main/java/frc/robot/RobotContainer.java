@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -87,6 +89,11 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        //makes it so pathplanner sees what the shootCommand oes
+        NamedCommands.registerCommand(
+        "ShootCommand", new ShootCommand(shooterSubsystem, false));
+        NamedCommands.registerCommand(
+        "IntakeCommand", new IntakeCommand(shooterSubsystem, false));
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
         // Left stick Y axis -> forward and backwards movement
