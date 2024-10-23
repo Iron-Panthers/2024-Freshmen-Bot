@@ -202,14 +202,14 @@ public class RobotContainer {
                 .start()
                 .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-        jacob
-                .a()
-                .onTrue(
-                        new RotateAngleDriveCommand(
-                                drivebaseSubsystem,
-                                translationXSupplier,
-                                translationYSupplier,
-                                DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
+        // jacob
+        //         .a()
+        //         .onTrue(
+        //                 new RotateAngleDriveCommand(
+        //                         drivebaseSubsystem,
+        //                         translationXSupplier,
+        //                         translationYSupplier,
+        //                         DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
         jacob
                 .leftBumper()
                 .whileTrue(
@@ -256,14 +256,14 @@ public class RobotContainer {
                                         : Setpoints.SPEAKER_DEGREES));
 
         // AMP
-        jacob
-                .b()
-                .onTrue(
-                        new RotateAngleDriveCommand(
-                                drivebaseSubsystem,
-                                translationXSupplier,
-                                translationYSupplier,
-                                DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
+        // jacob
+        //         .b()
+        //         .onTrue(
+        //                 new RotateAngleDriveCommand(
+        //                         drivebaseSubsystem,
+        //                         translationXSupplier,
+        //                         translationYSupplier,
+        //                         DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
 
     jacob
         .a()
@@ -274,6 +274,10 @@ public class RobotContainer {
                 () -> ControllerUtil.deadband(
                         (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
                 2);
+    jacob
+        .b()
+        .whileTrue(
+            new AmpOuttakeCommand(ampSubsystem));
 
     DoubleSupplier rotationVelocity =
         () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;

@@ -38,6 +38,13 @@ import java.util.List;
  */
 public final class Constants {
 
+  public static final class Mouthy {
+    public static final double SHOOT_SPEAKER_SPEED = -12;
+    public static final double INTAKE_SPEED = 9;
+    public static final double SHOOT_AMP_SPEED_UPPER = -1.02;
+    public static final double SHOOT_AMP_SPEED_LOWER = -3;
+  }
+
   public static final class Config {
     // maybe tune PID values?
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
@@ -209,9 +216,10 @@ public final class Constants {
   }
   public static final class Amp {
       public static final class Ports {
-        //TODO: ADD THE GOSH DANG PORT NUMBERS AND CHANGE THE PORT NAMES
         public static final int AMP_MOTOR_PORT = 14;
       }
+      public static final double OUTTAKE_SPEED = -0.5;
+      public static final double INTAKE_SPEED = 0.5;
   }
 
   public static final class Mouthy {
