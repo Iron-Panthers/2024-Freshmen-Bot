@@ -198,14 +198,14 @@ public class RobotContainer {
                 .start()
                 .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-        jacob
-                .a()
-                .onTrue(
-                        new RotateAngleDriveCommand(
-                                drivebaseSubsystem,
-                                translationXSupplier,
-                                translationYSupplier,
-                                DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
+        // jacob
+        //         .a()
+        //         .onTrue(
+        //                 new RotateAngleDriveCommand(
+        //                         drivebaseSubsystem,
+        //                         translationXSupplier,
+        //                         translationYSupplier,
+        //                         DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
         jacob
                 .leftBumper()
                 .whileTrue(
@@ -252,19 +252,19 @@ public class RobotContainer {
                                         : Setpoints.SPEAKER_DEGREES));
 
         // AMP
-        jacob
-                .b()
-                .onTrue(
-                        new RotateAngleDriveCommand(
-                                drivebaseSubsystem,
-                                translationXSupplier,
-                                translationYSupplier,
-                                DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
+        // jacob
+        //         .b()
+        //         .onTrue(
+        //                 new RotateAngleDriveCommand(
+        //                         drivebaseSubsystem,
+        //                         translationXSupplier,
+        //                         translationYSupplier,
+        //                         DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
 
-        .a()
+        jacob 
+                .a()
         .whileTrue(
             new AmpIntakeCommand(ampSubsystem));
-    jacob
 
         DoubleSupplier rotation = exponential(
                 () -> ControllerUtil.deadband(
