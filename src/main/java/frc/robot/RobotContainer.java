@@ -337,7 +337,7 @@ public class RobotContainer {
    */
   private static double axisScaler(double xValue, double yValue) {
     double radius = Math.hypot(xValue, yValue);
-    return radius < Drive.DEADBAND ? 0 : Math.pow(((radius-Drive.DEADBAND)/(radius*(1-Drive.DEADBAND))),2)*(0.95)+0.05;
+    return radius < Drive.DEADBAND ? 0 : Math.pow(((radius-Drive.DEADBAND)/(radius*(1-Drive.DEADBAND))),0.75)*(0.95)+0.05;
   }
 
     private static DoubleSupplier exponential(DoubleSupplier supplier, double exponential) {

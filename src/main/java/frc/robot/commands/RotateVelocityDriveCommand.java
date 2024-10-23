@@ -60,7 +60,7 @@ public class RotateVelocityDriveCommand extends Command {
     // movement
 
     drivebaseSubsystem.driveAngle(
-      new Pair<Double, Double>(x,y),drivebaseSubsystem.getTargetAngle()+4*rotSign*Math.pow(rot*rotSign, 1.5));
+      new Pair<Double, Double>(x,y),drivebaseSubsystem.getTargetAngle()+8*rotSign*Math.pow(rot*rotSign, 1.5));
   }
 
   // Called once the command ends or is interrupted.
