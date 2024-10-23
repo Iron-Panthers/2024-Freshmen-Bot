@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AmpIntakeCommand;
+import frc.robot.commands.AmpOuttakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
@@ -36,6 +38,7 @@ import frc.robot.commands.ShootCommand;
 // import frc.robot.commands.SpitCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.DrivebaseSubsystem;
+import frc.robot.subsystems.AmpSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
@@ -58,6 +61,7 @@ public class RobotContainer {
 
     private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final AmpSubsystem ampSubsystem = new AmpSubsystem();
 
     /** controller 1 */
     private final CommandXboxController jacob = new CommandXboxController(1);
@@ -257,24 +261,19 @@ public class RobotContainer {
                                 translationYSupplier,
                                 DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
 
-        /*
-         * jacob
-         * .a()
-         * .onTrue(
-         * new RotateAngleDriveCommand(
-         * drivebaseSubsystem,
-         * translationXSupplier,
-         * translationYSupplier,
-         * DriverStation.getAlliance().get().equals(Alliance.Red) ? 90 : -90)
-         * .alongWith(new PivotAngleCommand(pivotSubsystem, 138)) // FIXME idk
-         * .alongWith(new ShooterRampUpCommand(shooterSubsystem,
-         * ShooterMode.RAMP_AMP_FRONT)));
-         */
+        .a()
+        .whileTrue(
+            new AmpIntakeCommand(ampSubsystem));
+    jacob
 
         DoubleSupplier rotation = exponential(
                 () -> ControllerUtil.deadband(
                         (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
                 2);
+    jacob
+        .b()
+        .whileTrue(
+            new AmpOuttakeCommand(ampSubsystem));
 
     DoubleSupplier rotationVelocity =
         () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
