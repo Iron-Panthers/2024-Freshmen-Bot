@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -27,6 +29,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AmpIntakeCommand;
+import frc.robot.commands.AmpOuttakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
@@ -36,6 +40,7 @@ import frc.robot.commands.ShootCommand;
 // import frc.robot.commands.SpitCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.DrivebaseSubsystem;
+import frc.robot.subsystems.AmpSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
@@ -56,7 +61,8 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
-    private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
+  private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
+  private final AmpSubsystem ampSubsystem = new AmpSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
     /** controller 1 */
@@ -257,19 +263,10 @@ public class RobotContainer {
                                 translationYSupplier,
                                 DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
 
-        /*
-         * jacob
-         * .a()
-         * .onTrue(
-         * new RotateAngleDriveCommand(
-         * drivebaseSubsystem,
-         * translationXSupplier,
-         * translationYSupplier,
-         * DriverStation.getAlliance().get().equals(Alliance.Red) ? 90 : -90)
-         * .alongWith(new PivotAngleCommand(pivotSubsystem, 138)) // FIXME idk
-         * .alongWith(new ShooterRampUpCommand(shooterSubsystem,
-         * ShooterMode.RAMP_AMP_FRONT)));
-         */
+    jacob
+        .a()
+        .whileTrue(
+            new AmpIntakeCommand(ampSubsystem));
 
         DoubleSupplier rotation = exponential(
                 () -> ControllerUtil.deadband(

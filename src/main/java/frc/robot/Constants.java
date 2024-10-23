@@ -17,6 +17,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants.Drive.Dims;
+import frc.robot.subsystems.AmpSubsystem;
 import frc.util.CAN;
 import java.nio.file.Path;
 import java.util.List;
@@ -211,5 +212,11 @@ public final class Constants {
       public static final int SPEAKER_DEGREES = 11;
       public static final int EPSILON = 3;
     }
+  }
+  public static final class Amp {
+      public static final class Ports {
+        //TODO: ADD THE GOSH DANG PORT NUMBERS AND CHANGE THE PORT NAMES
+        public static final int AMP_MOTOR_PORT = 14;
+      }
   }
 }
