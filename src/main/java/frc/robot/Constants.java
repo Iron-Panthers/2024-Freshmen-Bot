@@ -76,7 +76,8 @@ public final class Constants {
   public static final class Drive {
     public static final int PIGEON_PORT = 0; // placeholder
     public static final String SWERVE_CANBUS = "rio"; // placeholder
-
+    /** joystick xbox controller deadband **/
+    public static final double DEADBAND = 0.07;
     // max voltage delivered to drivebase
     // supposedly useful to limit speed for testing
     public static final double MAX_VOLTAGE = 12.0;
@@ -149,14 +150,14 @@ public final class Constants {
         public static final double STEER_GEAR_RATIO = 21.428571428571427;
         public static final Slot0Configs DRIVE_MOTOR_GAINS = new Slot0Configs().withKP(3).withKI(0).withKD(0)
             .withKS(0.32).withKV(0.11).withKA(0);
-        public static final Slot0Configs STEER_MOTOR_GAINS = new Slot0Configs().withKP(11).withKI(0).withKD(0)
+        public static final Slot0Configs STEER_MOTOR_GAINS = new Slot0Configs().withKP(22).withKI(0).withKD(0)
             .withKS(0.4).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT = ClosedLoopOutputType.Voltage;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT = ClosedLoopOutputType.Voltage;
-        public static final SteerFeedbackType FEEDBACK_SOURCE = SteerFeedbackType.FusedCANcoder;
+        public static final SteerFeedbackType FEEDBACK_SOURCE = SteerFeedbackType.RemoteCANcoder;
         public static final double SPEED_TWELVE_VOLTS = MAX_VELOCITY_METERS_PER_SECOND;
         public static final double SLIP_CURRENT = 0; // optional, unused rn
-        public static final boolean STEER_MOTOR_INVERTED = true;
+        public static final boolean STEER_MOTOR_INVERTED = false;
 
         public static final DriveRequestType driveRequestType = DriveRequestType.OpenLoopVoltage;
         public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagic;
@@ -168,8 +169,8 @@ public final class Constants {
         public static final int STEER_ENCODER = CAN.at(24, "module 1 steer encoder");
 
         public static final double STEER_OFFSET = IS_COMP_BOT
-            ? -0.003173828125 // comp bot offset
-            : 0.0595703125; // practice bot offset
+            ? 0.001708984375 // comp bot offset
+            : 0.001708984375; // practice bot offset
       }
 
       public static final class Module2 { // back right
@@ -178,8 +179,8 @@ public final class Constants {
         public static final int STEER_ENCODER = CAN.at(25, "module 2 steer encoder");
 
         public static final double STEER_OFFSET = IS_COMP_BOT
-            ? 0.390380859375 // comp bot offset
-            : 0.262451171875; // practice bot offset
+            ? 0.366943359375 // comp bot offset
+            : 0.366943359375; // practice bot offset
       }
 
       public static final class Module3 { // front right
@@ -188,8 +189,8 @@ public final class Constants {
         public static final int STEER_ENCODER = CAN.at(26, "module 3 steer encoder");
 
         public static final double STEER_OFFSET = IS_COMP_BOT
-            ? 0.4189453125 // comp bot offset
-            : -0.20825195312; // practice bot offset
+            ? 0.389892578125 // comp bot offset
+            : 0.389892578125; // practice bot offset
       }
 
       public static final class Module4 { // front left
@@ -198,8 +199,8 @@ public final class Constants {
         public static final int STEER_ENCODER = CAN.at(27, "module 4 steer encoder");
 
         public static final double STEER_OFFSET = IS_COMP_BOT
-            ? -0.3408203125 // comp bot offset
-            : -0.3564453125 + 180; // practice bot offset
+            ? 0.3408203125 // comp bot offset
+            : 0.3408203125; // practice bot offset
       }
     }
 

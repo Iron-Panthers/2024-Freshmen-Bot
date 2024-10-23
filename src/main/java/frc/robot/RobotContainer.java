@@ -77,11 +77,11 @@ public class RobotContainer {
 
     private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
-    /* drive joystick "y" is passed to x because controller is inverted */
-    private final DoubleSupplier translationXSupplier = () -> (-modifyAxis(anthony.getLeftY())
-            * Drive.MAX_VELOCITY_METERS_PER_SECOND);
-    private final DoubleSupplier translationYSupplier = () -> (-modifyAxis(anthony.getLeftX())
-            * Drive.MAX_VELOCITY_METERS_PER_SECOND);
+  /* drive joystick "y" is passed to x because controller is inverted */
+  private final DoubleSupplier translationXSupplier =
+      () -> (-axisScaler(anthony.getLeftX(), anthony.getLeftY())*anthony.getLeftY() * Drive.MAX_VELOCITY_METERS_PER_SECOND);
+  private final DoubleSupplier translationYSupplier =
+      () -> (-axisScaler(anthony.getLeftX(), anthony.getLeftY())*anthony.getLeftX() * Drive.MAX_VELOCITY_METERS_PER_SECOND);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -276,17 +276,19 @@ public class RobotContainer {
                         (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
                 2);
 
-        DoubleSupplier rotationVelocity = () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                * 0.8;
+    DoubleSupplier rotationVelocity =
+        () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
+    
+    DoubleSupplier rotationAbsolute = () -> anthony.getRightTriggerAxis() - anthony.getLeftTriggerAxis();
 
-        new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
-                .whileTrue(
-                        new RotateVelocityDriveCommand(
-                                drivebaseSubsystem,
-                                translationXSupplier,
-                                translationYSupplier,
-                                rotationVelocity,
-                                anthony.rightBumper()));
+    new Trigger(() -> Math.abs(rotationAbsolute.getAsDouble()) > 0.1)
+        .whileTrue(
+            new RotateVelocityDriveCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                rotationAbsolute,
+                anthony.rightBumper()));
 
         new Trigger(
                 () -> Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX()) > Drive.ROTATE_VECTOR_MAGNITUDE)
@@ -330,21 +332,13 @@ public class RobotContainer {
                 : new WaitCommand(delay).andThen(autoSelector.getSelected());
     }
 
-    /**
-     * applies deadband and squares axis
-     *
-     * @param value the axis value to be modified
-     * @return the modified axis values
-     */
-    private static double modifyAxis(double value) {
-        // Deadband
-        value = ControllerUtil.deadband(value, 0.07);
-
-        // Square the axis
-        value = Math.copySign(value * value, value);
-
-        return value;
-    }
+  /**
+   * @return the scaler to be multipied to the x and y axises
+   */
+  private static double axisScaler(double xValue, double yValue) {
+    double radius = Math.hypot(xValue, yValue);
+    return radius < Drive.DEADBAND ? 0 : Math.pow(((radius-Drive.DEADBAND)/(radius*(1-Drive.DEADBAND))),2)*(0.95)+0.05;
+  }
 
     private static DoubleSupplier exponential(DoubleSupplier supplier, double exponential) {
         return () -> {

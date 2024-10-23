@@ -232,7 +232,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
         },
         this);
 
-    rotController = new PIDController(0.0179, 0, 0);
+    rotController = new PIDController(0.02, 0, 0);
     rotController.setSetpoint(0);
     rotController.setTolerance(ANGULAR_ERROR); // degrees error
 
@@ -302,11 +302,16 @@ public class DrivebaseSubsystem extends SubsystemBase {
         };
   }
 
+  public double getTargetAngle() {
+    return targetAngle;
+  }
+
   private Rotation2d driverGyroOffset = Rotation2d.fromDegrees(0);
 
   /** Sets the gyro angle to zero, resetting the forward direction */
   public void zeroGyroscope() {
     driverGyroOffset = getConsistentGyroscopeRotation();
+    targetAngle = 0;
   }
 
   public void zeroGyroscopeOffset(double offsetDegrees) {
