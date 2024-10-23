@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants.Drive.Dims;
 import frc.robot.subsystems.AmpSubsystem;
+import frc.robot.subsystems.RGBSubsystem.RGBColor;
 import frc.util.CAN;
 import java.nio.file.Path;
 import java.util.List;
@@ -36,13 +37,6 @@ import java.util.List;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
-  public static final class Mouthy {
-    public static final double SHOOT_SPEAKER_SPEED = -12;
-    public static final double INTAKE_SPEED = 9;
-    public static final double SHOOT_AMP_SPEED_UPPER = -1.1;
-    public static final double SHOOT_AMP_SPEED_LOWER = -3;
-  }
 
   public static final class Config {
     // maybe tune PID values?
@@ -78,7 +72,7 @@ public final class Constants {
     public static final int PIGEON_PORT = 0; // placeholder
     public static final String SWERVE_CANBUS = "rio"; // placeholder
     /** joystick xbox controller deadband **/
-    public static final double DEADBAND = 0.07;
+    public static final double DEADBAND = 0.1;
     // max voltage delivered to drivebase
     // supposedly useful to limit speed for testing
     public static final double MAX_VOLTAGE = 12.0;
@@ -218,5 +212,29 @@ public final class Constants {
         //TODO: ADD THE GOSH DANG PORT NUMBERS AND CHANGE THE PORT NAMES
         public static final int AMP_MOTOR_PORT = 14;
       }
+  }
+
+  public static final class Mouthy {
+    public static final double SHOOT_SPEAKER_SPEED = -12;
+    public static final double INTAKE_SPEED = 9;
+    public static final double SHOOT_AMP_SPEED_UPPER = -1.1;
+    public static final double SHOOT_AMP_SPEED_LOWER = -3;
+  }
+
+  public static final class Lights {
+    public static final int CANDLE_ID = 34;
+    public static final int NUM_LEDS =8; //8 in candle
+
+    public static final class Colors {
+      public static final RGBColor YELLOW = new RGBColor(255, 107, 0);
+      public static final RGBColor PURPLE = new RGBColor(127, 0, 127);
+      public static final RGBColor RED = new RGBColor(255, 0, 0);
+      public static final RGBColor ORANGE = new RGBColor(255, 35, 0);
+      public static final RGBColor BLUE = new RGBColor(0, 0, 255);
+      public static final RGBColor PINK = new RGBColor(250, 35, 100);
+      public static final RGBColor MINT = new RGBColor(55, 255, 50);
+      public static final RGBColor TEAL = new RGBColor(0, 255, 255);
+      public static final RGBColor WHITE = new RGBColor(255, 255, 255);
+    }
   }
 }

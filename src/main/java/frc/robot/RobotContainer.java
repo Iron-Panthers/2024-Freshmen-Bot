@@ -40,6 +40,7 @@ import frc.robot.commands.ShootCommand;
 // import frc.robot.commands.SpitCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.DrivebaseSubsystem;
+import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.AmpSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.util.ControllerUtil;
@@ -61,9 +62,10 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
-  private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
-  private final AmpSubsystem ampSubsystem = new AmpSubsystem();
+    private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
+    private final AmpSubsystem ampSubsystem = new AmpSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
 
     /** controller 1 */
     private final CommandXboxController jacob = new CommandXboxController(1);
@@ -217,12 +219,12 @@ public class RobotContainer {
                 .rightBumper()
                 .whileTrue(
                         new IntakeCommand(
-                                shooterSubsystem,false));
+                                shooterSubsystem,false, rgbSubsystem));
         jacob
                 .rightTrigger()
                 .whileTrue(
                         new IntakeCommand(
-                                shooterSubsystem,true));
+                                shooterSubsystem,true, rgbSubsystem));
         jacob
                 .leftTrigger()
                 .whileTrue(
@@ -266,7 +268,7 @@ public class RobotContainer {
     jacob
         .a()
         .whileTrue(
-            new AmpIntakeCommand(ampSubsystem));
+            new AmpIntakeCommand(ampSubsystem, rgbSubsystem));
 
         DoubleSupplier rotation = exponential(
                 () -> ControllerUtil.deadband(
