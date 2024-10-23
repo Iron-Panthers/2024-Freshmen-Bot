@@ -218,16 +218,10 @@ public final class Constants {
       public static final class Ports {
         public static final int AMP_MOTOR_PORT = 14;
       }
-      public static final double OUTTAKE_SPEED = -0.5;
-      public static final double INTAKE_SPEED = 0.5;
+      public static final double OUTTAKE_SPEED = 0.5;
+      public static final double INTAKE_SPEED = -0.5;
   }
 
-  public static final class Mouthy {
-    public static final double SHOOT_SPEAKER_SPEED = -12;
-    public static final double INTAKE_SPEED = 9;
-    public static final double SHOOT_AMP_SPEED_UPPER = -1.1;
-    public static final double SHOOT_AMP_SPEED_LOWER = -3;
-  }
 
   public static final class Lights {
     public static final int CANDLE_ID = 34;

@@ -272,7 +272,7 @@ public class RobotContainer {
 
         DoubleSupplier rotation = exponential(
                 () -> ControllerUtil.deadband(
-                        (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
+                        (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .05),
                 2);
     jacob
         .b()

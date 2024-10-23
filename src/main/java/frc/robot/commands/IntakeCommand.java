@@ -24,6 +24,7 @@ public class IntakeCommand extends Command {
   public IntakeCommand(ShooterSubsystem shooterSubsystem, boolean amp, RGBSubsystem rgbSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
     this.amp = amp;
+    this.rgbSubsystem = rgbSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooterSubsystem);
     message = Optional.empty();
