@@ -221,12 +221,12 @@ public class RobotContainer {
                     DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
     
     jacob
-        .leftBumper()
+        .a()
         .whileTrue(
             new AmpIntakeCommand(ampSubsystem));
 
     jacob
-        .rightBumper()
+        .b()
         .whileTrue(
             new AmpOuttakeCommand(ampSubsystem));
     /*    jacob
