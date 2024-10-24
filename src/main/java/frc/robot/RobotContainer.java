@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AdvancedAmpCommand;
 import frc.robot.commands.AmpIntakeCommand;
 import frc.robot.commands.AmpOuttakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
@@ -104,9 +105,7 @@ public class RobotContainer {
                 new DefaultDriveCommand(
                         drivebaseSubsystem,
                         translationXSupplier,
-                        translationYSupplier,
-                        // anthony.rightBumper(),
-                        anthony.leftBumper()));
+                        translationYSupplier));
 
         // pivotSubsystem.setDefaultCommand(
         // new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
@@ -222,9 +221,8 @@ public class RobotContainer {
                                 shooterSubsystem,false, rgbSubsystem));
         jacob
                 .rightTrigger()
-                .whileTrue(
-                        new IntakeCommand(
-                                shooterSubsystem,true, rgbSubsystem));
+                .onTrue(
+                        new AdvancedAmpCommand(shooterSubsystem, rgbSubsystem, drivebaseSubsystem));
         jacob
                 .leftTrigger()
                 .whileTrue(

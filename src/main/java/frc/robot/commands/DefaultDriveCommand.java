@@ -23,7 +23,6 @@ public class DefaultDriveCommand extends Command {
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
 
-  private final BooleanSupplier isRobotRelativeForwardSupplier;
 
   private double targetAngle;
   // private final BooleanSupplier isRobotRelativeBackwardSupplier;
@@ -32,14 +31,12 @@ public class DefaultDriveCommand extends Command {
   public DefaultDriveCommand(
       DrivebaseSubsystem drivebaseSubsystem,
       DoubleSupplier translationXSupplier,
-      DoubleSupplier translationYSupplier,
-      BooleanSupplier isRobotRelativeForwardSupplier) {
+      DoubleSupplier translationYSupplier) {
     // BooleanSupplier isRobotRelativeBackwardSupplier) {
 
     this.drivebaseSubsystem = drivebaseSubsystem;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
-    this.isRobotRelativeForwardSupplier = isRobotRelativeForwardSupplier;
     // this.isRobotRelativeBackwardSupplier = isRobotRelativeBackwardSupplier;
 
     addRequirements(drivebaseSubsystem);
@@ -53,7 +50,6 @@ public class DefaultDriveCommand extends Command {
   public void execute() {
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
-    Boolean forwardRelative = isRobotRelativeForwardSupplier.getAsBoolean();
     // Boolean backwardRelative = isRobotRelativeBackwardSupplier.getAsBoolean();
 
     drivebaseSubsystem.driveAngle(
