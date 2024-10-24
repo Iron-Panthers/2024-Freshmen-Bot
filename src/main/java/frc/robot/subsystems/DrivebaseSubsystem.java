@@ -39,35 +39,42 @@ import frc.util.Util;
 
 public class DrivebaseSubsystem extends SubsystemBase {
   /**
-   * The kinematics object allows us to encode our relationship between desired speeds (represented
-   * by a ChassisSpeeds object) and our actual drive outputs (what speeds and angles we apply to
+   * The kinematics object allows us to encode our relationship between desired
+   * speeds (represented
+   * by a ChassisSpeeds object) and our actual drive outputs (what speeds and
+   * angles we apply to
    * each module)
    */
-  private final SwerveDriveKinematics kinematics =
-      new SwerveDriveKinematics(
-          // Front right
-          new Translation2d(Dims.TRACKWIDTH_METERS / 2.0, -Dims.WHEELBASE_METERS / 2.0),
-          // Front left
-          new Translation2d(Dims.TRACKWIDTH_METERS / 2.0, Dims.WHEELBASE_METERS / 2.0),
-          // Back left
-          new Translation2d(-Dims.TRACKWIDTH_METERS / 2.0, Dims.WHEELBASE_METERS / 2.0),
-          // Back right
-          new Translation2d(-Dims.TRACKWIDTH_METERS / 2.0, -Dims.WHEELBASE_METERS / 2.0));
+  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+      // Front right
+      new Translation2d(Dims.TRACKWIDTH_METERS / 2.0, -Dims.WHEELBASE_METERS / 2.0),
+      // Front left
+      new Translation2d(Dims.TRACKWIDTH_METERS / 2.0, Dims.WHEELBASE_METERS / 2.0),
+      // Back left
+      new Translation2d(-Dims.TRACKWIDTH_METERS / 2.0, Dims.WHEELBASE_METERS / 2.0),
+      // Back right
+      new Translation2d(-Dims.TRACKWIDTH_METERS / 2.0, -Dims.WHEELBASE_METERS / 2.0));
 
   /**
-   * Object handles configuration and control of drivetrain. Also contains each swerve module.
-   * Order: FR, FL, BL, BR. Or in Quadrants: I, II, III, IV Handles odometry, but unsure if it's
+   * Object handles configuration and control of drivetrain. Also contains each
+   * swerve module.
+   * Order: FR, FL, BL, BR. Or in Quadrants: I, II, III, IV Handles odometry, but
+   * unsure if it's
    * better to do it ourselves
    */
   private final SwerveDrivetrain swerveDrivetrain;
 
   private final SwerveModule[] swerveModules;
 
-  /** The SwerveDriveOdometry class allows us to estimate the robot's "pose" over time. */
+  /**
+   * The SwerveDriveOdometry class allows us to estimate the robot's "pose" over
+   * time.
+   */
   private final SwerveDrivePoseEstimator swervePoseEstimator;
 
   /**
-   * Keeps track of the current estimated pose (x,y,theta) of the robot, as estimated by odometry.
+   * Keeps track of the current estimated pose (x,y,theta) of the robot, as
+   * estimated by odometry.
    */
   private Pose2d robotPose = new Pose2d();
 
@@ -75,10 +82,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(); // defaults to zeros
 
   /* Requests to pass to SwerveDrivetrain objects */
-  private ApplyChassisSpeeds chassisSpeedRequest =
-      new ApplyChassisSpeeds()
-          .withDriveRequestType(Modules.Params.driveRequestType)
-          .withSteerRequestType(Modules.Params.steerRequestType);
+  private ApplyChassisSpeeds chassisSpeedRequest = new ApplyChassisSpeeds()
+      .withDriveRequestType(Modules.Params.driveRequestType)
+      .withSteerRequestType(Modules.Params.steerRequestType);
   private SwerveDriveBrake swerveBrakeRequest = new SwerveDriveBrake();
 
   /** The modes of the drivebase subsystem */
@@ -106,15 +112,21 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   private Pair<Double, Double> xyInput = new Pair<>(0d, 0d); // the x and y for using target angles
   /**
-   * The Shuffleboard tab which all things related to the drivebase can be put for easy access and
+   * The Shuffleboard tab which all things related to the drivebase can be put for
+   * easy access and
    * organization
    */
   private final ShuffleboardTab tab = Shuffleboard.getTab("Drivebase");
 
-  /* adds swerve module values to shuffleboard
+  /*
+   * adds swerve module values to shuffleboard
+   * 
    * @param title title of the module layout
+   * 
    * @param pos position of module (and layout), 0-3 corresponds to fL, fR, bL, bR
+   * 
    * @param swerveDrive
+   * 
    * @param shuffleboardTab
    */
   private void addSwerveShuffleboard(
@@ -130,79 +142,72 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   /** Creates a new DrivebaseSubsystem. */
   public DrivebaseSubsystem() {
-    
+
     if (!Config.DISABLE_SWERVE_INIT) {
-      final SwerveDrivetrainConstants swerveDrivetrainConstants =
-          new SwerveDrivetrainConstants().withPigeon2Id(PIGEON_PORT).withCANbusName(SWERVE_CANBUS);
+      final SwerveDrivetrainConstants swerveDrivetrainConstants = new SwerveDrivetrainConstants()
+          .withPigeon2Id(PIGEON_PORT).withCANbusName(SWERVE_CANBUS);
 
-      final SwerveModuleConstantsFactory swerveModuleConstantsFactory =
-          new SwerveModuleConstantsFactory()
-              .withWheelRadius(Modules.Params.WHEEL_RADIUS)
-              .withCouplingGearRatio(Modules.Params.COUPLING_GEAR_RATIO)
-              .withDriveMotorGearRatio(Modules.Params.DRIVE_GEAR_RATIO)
-              .withSteerMotorGearRatio(Modules.Params.STEER_GEAR_RATIO)
-              .withDriveMotorGains(Modules.Params.DRIVE_MOTOR_GAINS)
-              .withSteerMotorGains(Modules.Params.STEER_MOTOR_GAINS)
-              .withDriveMotorClosedLoopOutput(Modules.Params.DRIVE_CLOSED_LOOP_OUTPUT)
-              .withSteerMotorClosedLoopOutput(Modules.Params.STEER_CLOSED_LOOP_OUTPUT)
-              .withFeedbackSource(Modules.Params.FEEDBACK_SOURCE)
-              .withSpeedAt12VoltsMps(Modules.Params.SPEED_TWELVE_VOLTS)
-              .withSteerMotorInverted(Modules.Params.STEER_MOTOR_INVERTED);
-
-      // module wheel positions taken from kinematics object
-      final SwerveModuleConstants frontLeft =
-          swerveModuleConstantsFactory.createModuleConstants(
-              Modules.Module4.STEER_MOTOR,
-              Modules.Module4.DRIVE_MOTOR,
-              Modules.Module4.STEER_ENCODER,
-              Modules.Module4.STEER_OFFSET,
-              Dims.TRACKWIDTH_METERS / 2.0,
-              Dims.TRACKWIDTH_METERS / 2.0,
-              false);
+      final SwerveModuleConstantsFactory swerveModuleConstantsFactory = new SwerveModuleConstantsFactory()
+          .withWheelRadius(Modules.Params.WHEEL_RADIUS)
+          .withCouplingGearRatio(Modules.Params.COUPLING_GEAR_RATIO)
+          .withDriveMotorGearRatio(Modules.Params.DRIVE_GEAR_RATIO)
+          .withSteerMotorGearRatio(Modules.Params.STEER_GEAR_RATIO)
+          .withDriveMotorGains(Modules.Params.DRIVE_MOTOR_GAINS)
+          .withSteerMotorGains(Modules.Params.STEER_MOTOR_GAINS)
+          .withDriveMotorClosedLoopOutput(Modules.Params.DRIVE_CLOSED_LOOP_OUTPUT)
+          .withSteerMotorClosedLoopOutput(Modules.Params.STEER_CLOSED_LOOP_OUTPUT)
+          .withFeedbackSource(Modules.Params.FEEDBACK_SOURCE)
+          .withSpeedAt12VoltsMps(Modules.Params.SPEED_TWELVE_VOLTS)
+          .withSteerMotorInverted(Modules.Params.STEER_MOTOR_INVERTED);
 
       // module wheel positions taken from kinematics object
-      final SwerveModuleConstants frontRight =
-          swerveModuleConstantsFactory.createModuleConstants(
-              Modules.Module3.STEER_MOTOR,
-              Modules.Module3.DRIVE_MOTOR,
-              Modules.Module3.STEER_ENCODER,
-              Modules.Module3.STEER_OFFSET,
-              Dims.TRACKWIDTH_METERS / 2.0,
-              -Dims.TRACKWIDTH_METERS / 2.0,
-              true);
+      final SwerveModuleConstants frontLeft = swerveModuleConstantsFactory.createModuleConstants(
+          Modules.Module4.STEER_MOTOR,
+          Modules.Module4.DRIVE_MOTOR,
+          Modules.Module4.STEER_ENCODER,
+          Modules.Module4.STEER_OFFSET,
+          Dims.TRACKWIDTH_METERS / 2.0,
+          Dims.TRACKWIDTH_METERS / 2.0,
+          false);
 
       // module wheel positions taken from kinematics object
-      final SwerveModuleConstants backLeft =
-          swerveModuleConstantsFactory.createModuleConstants(
-              Modules.Module1.STEER_MOTOR,
-              Modules.Module1.DRIVE_MOTOR,
-              Modules.Module1.STEER_ENCODER,
-              Modules.Module1.STEER_OFFSET,
-              -Dims.TRACKWIDTH_METERS / 2.0,
-              Dims.TRACKWIDTH_METERS / 2.0,
-              false);
+      final SwerveModuleConstants frontRight = swerveModuleConstantsFactory.createModuleConstants(
+          Modules.Module3.STEER_MOTOR,
+          Modules.Module3.DRIVE_MOTOR,
+          Modules.Module3.STEER_ENCODER,
+          Modules.Module3.STEER_OFFSET,
+          Dims.TRACKWIDTH_METERS / 2.0,
+          -Dims.TRACKWIDTH_METERS / 2.0,
+          true);
 
       // module wheel positions taken from kinematics object
-      final SwerveModuleConstants backRight =
-          swerveModuleConstantsFactory.createModuleConstants(
-              Modules.Module2.STEER_MOTOR,
-              Modules.Module2.DRIVE_MOTOR,
-              Modules.Module2.STEER_ENCODER,
-              Modules.Module2.STEER_OFFSET,
-              -Dims.TRACKWIDTH_METERS / 2.0,
-              -Dims.TRACKWIDTH_METERS / 2.0,
-              true);
+      final SwerveModuleConstants backLeft = swerveModuleConstantsFactory.createModuleConstants(
+          Modules.Module1.STEER_MOTOR,
+          Modules.Module1.DRIVE_MOTOR,
+          Modules.Module1.STEER_ENCODER,
+          Modules.Module1.STEER_OFFSET,
+          -Dims.TRACKWIDTH_METERS / 2.0,
+          Dims.TRACKWIDTH_METERS / 2.0,
+          false);
 
-      swerveDrivetrain =
-          new SwerveDrivetrain(
-              swerveDrivetrainConstants, frontLeft, frontRight, backLeft, backRight);
-      swerveModules =
-          new SwerveModule[] {
-            swerveDrivetrain.getModule(0),
-            swerveDrivetrain.getModule(1),
-            swerveDrivetrain.getModule(2),
-            swerveDrivetrain.getModule(3)
-          };
+      // module wheel positions taken from kinematics object
+      final SwerveModuleConstants backRight = swerveModuleConstantsFactory.createModuleConstants(
+          Modules.Module2.STEER_MOTOR,
+          Modules.Module2.DRIVE_MOTOR,
+          Modules.Module2.STEER_ENCODER,
+          Modules.Module2.STEER_OFFSET,
+          -Dims.TRACKWIDTH_METERS / 2.0,
+          -Dims.TRACKWIDTH_METERS / 2.0,
+          true);
+
+      swerveDrivetrain = new SwerveDrivetrain(
+          swerveDrivetrainConstants, frontLeft, frontRight, backLeft, backRight);
+      swerveModules = new SwerveModule[] {
+          swerveDrivetrain.getModule(0),
+          swerveDrivetrain.getModule(1),
+          swerveDrivetrain.getModule(2),
+          swerveDrivetrain.getModule(3)
+      };
     } else {
       swerveDrivetrain = null;
     }
@@ -214,7 +219,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
         this::drive,
         Constants.Config.PATH_FOLLOWER_CONFIG,
         () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
@@ -232,13 +238,12 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
     zeroGyroscope();
 
-    swervePoseEstimator =
-        new SwerveDrivePoseEstimator(
-            kinematics,
-            getConsistentGyroscopeRotation(),
-            getSwerveModulePositions(),
-            // FIXME: USE A REAL VALUE HERE
-            new Pose2d(3.5, 2.2, Rotation2d.fromDegrees(0)));
+    swervePoseEstimator = new SwerveDrivePoseEstimator(
+        kinematics,
+        getConsistentGyroscopeRotation(),
+        getSwerveModulePositions(),
+        // FIXME: USE A REAL VALUE HERE
+        new Pose2d(3.5, 2.2, Rotation2d.fromDegrees(0)));
 
     if (Config.SHOW_SHUFFLEBOARD_DEBUG_DATA) {
       tab.addDouble("x", () -> chassisSpeeds.vxMetersPerSecond);
@@ -252,8 +257,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
       tab.addDouble("consistent gyro", () -> getConsistentGyroscopeRotation().getDegrees());
       tab.addDouble(
           "angular difference",
-          () ->
-              -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle));
+          () -> -Util.relativeAngularDifference(getDriverGyroscopeRotation().times(-1), targetAngle));
 
       addSwerveShuffleboard("module 4", 0, swerveModules, tab);
       addSwerveShuffleboard("module 3", 1, swerveModules, tab);
@@ -267,6 +271,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   public boolean isAtTargetAngle() {
     return Util.epsilonEquals(getPose().getRotation().getDegrees(), targetAngle, Setpoints.EPSILON);
   }
+
   /** Return the current pose estimation of the robot */
   public Pose2d getPose() {
     return robotPose;
@@ -284,17 +289,21 @@ public class DrivebaseSubsystem extends SubsystemBase {
   private SwerveModulePosition[] getSwerveModulePositions() {
     return Config.DISABLE_SWERVE_INIT
         ? new SwerveModulePosition[] {
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
-          new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition(),
         }
         : new SwerveModulePosition[] {
-          swerveModules[0].getPosition(false),
-          swerveModules[1].getPosition(false),
-          swerveModules[2].getPosition(false),
-          swerveModules[3].getPosition(false),
+            swerveModules[0].getPosition(false),
+            swerveModules[1].getPosition(false),
+            swerveModules[2].getPosition(false),
+            swerveModules[3].getPosition(false),
         };
+  }
+
+  public double getTargetAngle() {
+    return targetAngle;
   }
 
   private Rotation2d driverGyroOffset = Rotation2d.fromDegrees(0);
@@ -302,6 +311,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
   /** Sets the gyro angle to zero, resetting the forward direction */
   public void zeroGyroscope() {
     driverGyroOffset = getConsistentGyroscopeRotation();
+    targetAngle = 0;
   }
 
   public void zeroGyroscopeOffset(double offsetDegrees) {
@@ -310,9 +320,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
   /** Aligns gyro heading with pose estimation */
   public void smartZeroGyroscope() {
-    driverGyroOffset =
-        getConsistentGyroscopeRotation()
-            .minus(swervePoseEstimator.getEstimatedPosition().getRotation());
+    driverGyroOffset = getConsistentGyroscopeRotation()
+        .minus(swervePoseEstimator.getEstimatedPosition().getRotation());
   }
 
   /**
@@ -322,23 +331,24 @@ public class DrivebaseSubsystem extends SubsystemBase {
    */
   public void resetOdometryToPose(Pose2d pose2d) {
     // "Zero" the driver gyro heading
-    driverGyroOffset =
-        getConsistentGyroscopeRotation()
-            .minus(pose2d.getRotation())
-            .plus(
-                DriverStation.getAlliance().get() == Alliance.Blue
-                    ? new Rotation2d()
-                    : Rotation2d.fromDegrees(180));
+    driverGyroOffset = getConsistentGyroscopeRotation()
+        .minus(pose2d.getRotation())
+        .plus(
+            DriverStation.getAlliance().get() == Alliance.Blue
+                ? new Rotation2d()
+                : Rotation2d.fromDegrees(180));
 
     swervePoseEstimator.resetPosition(
         getConsistentGyroscopeRotation(), getSwerveModulePositions(), pose2d);
   }
 
   /**
-   * Gets the current angle of the robot, relative to boot position. This value will not be reset,
+   * Gets the current angle of the robot, relative to boot position. This value
+   * will not be reset,
    * and is used for odometry.
    *
-   * <p>Use this value for odometry.
+   * <p>
+   * Use this value for odometry.
    *
    * @return The current angle of the robot, relative to boot position.
    */
@@ -353,20 +363,26 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   /**
-   * Gets the current angle of the robot, relative to the last time zeroGyroscope() was called. This
-   * is not the same as the angle of the robot on the field, which is what getPose().getRotation()
+   * Gets the current angle of the robot, relative to the last time
+   * zeroGyroscope() was called. This
+   * is not the same as the angle of the robot on the field, which is what
+   * getPose().getRotation()
    * returns. This is the angle of the robot as the driver sees it.
    *
-   * <p>Use this value for driving the robot.
+   * <p>
+   * Use this value for driving the robot.
    *
-   * @return The current angle of the robot, relative to the last time zeroGyroscope() was called.
+   * @return The current angle of the robot, relative to the last time
+   *         zeroGyroscope() was called.
    */
   public Rotation2d getDriverGyroscopeRotation() {
-    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes
+    // We have to invert the angle of the NavX so that rotating the robot
+    // counter-clockwise makes
     // the angle increase.
     Rotation2d angle = getConsistentGyroscopeRotation();
 
-    // We need to subtract the offset here so that the robot drives forward based on auto
+    // We need to subtract the offset here so that the robot drives forward based on
+    // auto
     // positioning or manual reset
     return Util.normalizeDegrees(angle.minus(driverGyroOffset));
   }
@@ -396,7 +412,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
   public void driveAngle(Pair<Double, Double> xyInput, double targetAngle) {
     this.xyInput = xyInput;
     this.targetAngle = targetAngle;
-    if (mode != Modes.DRIVE_ANGLE) rotController.reset();
+    if (mode != Modes.DRIVE_ANGLE)
+      rotController.reset();
     mode = Modes.DRIVE_ANGLE;
   }
 
@@ -423,7 +440,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   /**
-   * Angles the swerve modules in a cross shape, to make the robot hard to push. This function sets
+   * Angles the swerve modules in a cross shape, to make the robot hard to push.
+   * This function sets
    * the state machine to defense mode, so it only needs to be called once
    */
   public void setDefenseMode() {
@@ -431,12 +449,12 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   /**
-   * Updates the robot pose estimation for newly written module states. Should be called on every
+   * Updates the robot pose estimation for newly written module states. Should be
+   * called on every
    * periodic
    */
   private void odometryPeriodic() {
-    this.robotPose =
-        swervePoseEstimator.update(getConsistentGyroscopeRotation(), getSwerveModulePositions());
+    this.robotPose = swervePoseEstimator.update(getConsistentGyroscopeRotation(), getSwerveModulePositions());
   }
 
   private void drivePeriodic() {
@@ -449,7 +467,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
     double rotationValue = rotController.calculate(angularDifference);
 
-    // we are treating this like a joystick, so -1 and 1 are its lower and upper bound
+    // we are treating this like a joystick, so -1 and 1 are its lower and upper
+    // bound
     rotationValue = MathUtil.clamp(rotationValue, -1, 1);
 
     // this value makes our unit-less [-1, 1] into [-max angular, max angular]
@@ -462,12 +481,11 @@ public class DrivebaseSubsystem extends SubsystemBase {
     }
 
     // initialize chassis speeds but add our desired angle
-    chassisSpeeds =
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            xyInput.getFirst(),
-            xyInput.getSecond(),
-            omegaRadiansPerSecond,
-            getDriverGyroscopeRotation());
+    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        xyInput.getFirst(),
+        xyInput.getSecond(),
+        omegaRadiansPerSecond,
+        getDriverGyroscopeRotation());
 
     // use the existing drive periodic logic to assign to motors ect
     drivePeriodic();
@@ -480,13 +498,15 @@ public class DrivebaseSubsystem extends SubsystemBase {
   }
 
   /**
-   * Based on the current Mode of the drivebase, perform the mode-specific logic such as writing
+   * Based on the current Mode of the drivebase, perform the mode-specific logic
+   * such as writing
    * outputs (may vary per mode).
    *
    * @param mode The mode to use (should use the current mode value)
    */
   public void updateModules(Modes mode) {
-    if (Config.DISABLE_SWERVE_INIT) return;
+    if (Config.DISABLE_SWERVE_INIT)
+      return;
     switch (mode) {
       case DRIVE -> drivePeriodic();
       case DRIVE_ANGLE -> driveAnglePeriodic();
@@ -527,7 +547,8 @@ public class DrivebaseSubsystem extends SubsystemBase {
       double y,
       double rotationVelocity,
       Rotation2d currentGyroAngle) {
-    if (isRobotRelativeForward) return new ChassisSpeeds(x, y, rotationVelocity);
+    if (isRobotRelativeForward)
+      return new ChassisSpeeds(x, y, rotationVelocity);
     return ChassisSpeeds.fromFieldRelativeSpeeds(x, y, rotationVelocity, currentGyroAngle);
   }
 }
