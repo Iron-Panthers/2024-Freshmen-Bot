@@ -33,6 +33,7 @@ import frc.robot.commands.AdvancedAmpCommand;
 import frc.robot.commands.AmpIntakeCommand;
 import frc.robot.commands.AmpOuttakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
@@ -98,9 +99,13 @@ public class RobotContainer {
     public RobotContainer() {
         //makes it so pathplanner sees what the shootCommand oes
         NamedCommands.registerCommand(
-        "ShootCommand", new ShootCommand(shooterSubsystem, false));
-        NamedCommands.registerCommand(
-        "IntakeCommand", new IntakeCommand(shooterSubsystem, false, rgbSubsystem));
+        "ShootCommand", new ShootCommand(shooterSubsystem, false).withTimeout(2));
+
+        NamedCommands.registerCommand("AmpShot", new AdvancedAmpCommand(shooterSubsystem, rgbSubsystem, drivebaseSubsystem));
+
+        NamedCommands.registerCommand("RampCommand", new IntakeCommand(shooterSubsystem,false,rgbSubsystem));
+        // NamedCommands.registerCommand(
+        // "IntakeCommand", new IntakeCommand(shooterSubsystem, false,rgbSubsystem));
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
         // Left stick Y axis -> forward and backwards movement
