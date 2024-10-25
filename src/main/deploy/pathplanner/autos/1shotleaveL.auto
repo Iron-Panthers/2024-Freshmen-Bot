@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4196082471371174,
+      "y": 6.085212729861234
+    },
+    "rotation": -159.0573494502022
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SpeakerL Leave"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "2024 freshman bot",
+  "choreoAuto": false
+}
