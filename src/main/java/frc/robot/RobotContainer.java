@@ -266,10 +266,9 @@ public class RobotContainer {
         .whileTrue(
             new AmpIntakeCommand(ampSubsystem));
 
-        DoubleSupplier rotation = exponential(
+        DoubleSupplier rotation =
                 () -> ControllerUtil.deadband(
-                        (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
-                2);
+                        (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .01);
     jacob
         .b()
         .whileTrue(

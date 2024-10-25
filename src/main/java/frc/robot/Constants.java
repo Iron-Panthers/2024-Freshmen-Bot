@@ -217,7 +217,7 @@ public final class Constants {
       public static final class Ports {
         public static final int AMP_MOTOR_PORT = 14;
       }
-      public static final double OUTTAKE_SPEED = -0.5;
+      public static final double OUTTAKE_SPEED = -0.6;
       public static final double INTAKE_SPEED = 0.5;
   }
 }
