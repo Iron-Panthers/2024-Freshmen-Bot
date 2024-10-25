@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "2024 freshman bot",
+  "folder": null,
   "previewStartingState": {
     "rotation": -170.9806775686184,
     "velocity": 0
