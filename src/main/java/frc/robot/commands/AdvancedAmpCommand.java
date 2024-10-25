@@ -18,16 +18,26 @@ public class AdvancedAmpCommand extends SequentialCommandGroup {
       RGBSubsystem rgbSubsystem,
       DrivebaseSubsystem drivebaseSubsystem) {
     addCommands(
-      new ShootCommand(shooterSubsystem, true).withTimeout(2),
+      new ShootCommand(shooterSubsystem, true).withTimeout(0.7),
       new DriveDirectionCommand(
         DrivebaseSubsystem.produceChassisSpeeds(
-          true, 0, 1, 0, drivebaseSubsystem.getDriverGyroscopeRotation())
+          true, -3, 0, 0, drivebaseSubsystem.getDriverGyroscopeRotation())
           ,drivebaseSubsystem)
-          .withTimeout(0.4),
+          .withTimeout(0.1),
       new DriveDirectionCommand(
         DrivebaseSubsystem.produceChassisSpeeds(
-          true, 0, -1, 0, drivebaseSubsystem.getDriverGyroscopeRotation())
+          true, 5, 0, 0, drivebaseSubsystem.getDriverGyroscopeRotation())
           ,drivebaseSubsystem)
-          .withTimeout(0.4));
+          .withTimeout(0.2),
+      new DriveDirectionCommand(
+        DrivebaseSubsystem.produceChassisSpeeds(
+          true, -3, 0, 0, drivebaseSubsystem.getDriverGyroscopeRotation())
+          ,drivebaseSubsystem)
+          .withTimeout(0.1),
+      new DriveDirectionCommand(
+        DrivebaseSubsystem.produceChassisSpeeds(
+          true, 5, 0, 0, drivebaseSubsystem.getDriverGyroscopeRotation())
+          ,drivebaseSubsystem)
+          .withTimeout(0.2));
   }
 }

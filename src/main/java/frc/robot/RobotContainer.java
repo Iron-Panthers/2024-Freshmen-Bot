@@ -221,13 +221,12 @@ public class RobotContainer {
                                 shooterSubsystem,false, rgbSubsystem));
         jacob
                 .rightTrigger()
-                .onTrue(
-                        new AdvancedAmpCommand(shooterSubsystem, rgbSubsystem, drivebaseSubsystem));
+                .whileTrue(new IntakeCommand(shooterSubsystem, true, rgbSubsystem));
+                
         jacob
                 .leftTrigger()
-                .whileTrue(
-                        new ShootCommand(
-                                shooterSubsystem, true));
+                .onTrue(
+                        new AdvancedAmpCommand(shooterSubsystem, rgbSubsystem, drivebaseSubsystem));
 
         // SOURCE
         anthony

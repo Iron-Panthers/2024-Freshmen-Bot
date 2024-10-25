@@ -41,7 +41,7 @@ public final class Constants {
   public static final class Mouthy {
     public static final double SHOOT_SPEAKER_SPEED = -12;
     public static final double INTAKE_SPEED = 9;
-    public static final double SHOOT_AMP_SPEED_UPPER = -1.02;
+    public static final double SHOOT_AMP_SPEED_UPPER = -1.1;
     public static final double SHOOT_AMP_SPEED_LOWER = -3;
   }
 
