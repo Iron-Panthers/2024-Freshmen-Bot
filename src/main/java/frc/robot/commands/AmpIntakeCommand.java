@@ -4,22 +4,35 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.AmpSubsystem;
+import frc.robot.subsystems.RGBSubsystem;
 import frc.robot.subsystems.AmpSubsystem.AmpMode;
+import frc.robot.subsystems.RGBSubsystem.RGBMessage;
 
 public class AmpIntakeCommand extends Command {
-    AmpSubsystem ampSubsystem;
+    private AmpSubsystem ampSubsystem;
+    private RGBSubsystem rgbSubsystem;
+    private Optional <RGBMessage> message;
   /** Creates a new DefenseModeCommand. */
-  public AmpIntakeCommand(AmpSubsystem ampSubsystem) {
+  public AmpIntakeCommand(AmpSubsystem ampSubsystem, RGBSubsystem rgbSubsystem) {
     this.ampSubsystem = ampSubsystem;
-    addRequirements(ampSubsystem);
+    this.rgbSubsystem = rgbSubsystem;
+    message = Optional.empty();
+    addRequirements(ampSubsystem, rgbSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
         ampSubsystem.setAmpMode(AmpMode.INTAKE);
+        message = Optional.of (rgbSubsystem.showMessage(
+                  Constants.Lights.Colors.ORANGE,
+                  RGBSubsystem.PatternTypes.STROBE,
+                  RGBSubsystem.MessagePriority.F_NOTE_IN_ROBOT));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,6 +44,8 @@ public class AmpIntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     ampSubsystem.setAmpMode(AmpMode.IDLE);
+    message.ifPresent(RGBMessage::expire);
+    message = Optional.empty();  
   }
 
   // Returns true when the command should end.
