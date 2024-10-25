@@ -100,7 +100,7 @@ public class RobotContainer {
         NamedCommands.registerCommand(
         "ShootCommand", new ShootCommand(shooterSubsystem, false));
         NamedCommands.registerCommand(
-        "IntakeCommand", new IntakeCommand(shooterSubsystem, false));
+        "IntakeCommand", new IntakeCommand(shooterSubsystem, false, rgbSubsystem));
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
         // Left stick Y axis -> forward and backwards movement
