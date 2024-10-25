@@ -14,13 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeCommand"
+            "name": "RampCommand"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 2.0
           }
         },
         {
