@@ -24,7 +24,6 @@ public class DefaultDriveCommand extends Command {
   private final DoubleSupplier translationYSupplier;
 
 
-  private double targetAngle;
   // private final BooleanSupplier isRobotRelativeBackwardSupplier;
 
   /** Creates a new DefaultDriveCommand. */
@@ -51,10 +50,15 @@ public class DefaultDriveCommand extends Command {
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
     // Boolean backwardRelative = isRobotRelativeBackwardSupplier.getAsBoolean();
+    drivebaseSubsystem.drive(
+        DrivebaseSubsystem.produceChassisSpeeds(
+            false,
+            // backwardRelative,
+            x,
+            y,
+            0,
+            drivebaseSubsystem.getDriverGyroscopeRotation()));
 
-    drivebaseSubsystem.driveAngle(
-            new Pair<Double, Double>(x, y),
-            drivebaseSubsystem.getTargetAngle());
   }
 
   // Called once the command ends or is interrupted.

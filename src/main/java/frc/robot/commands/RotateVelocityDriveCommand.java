@@ -54,13 +54,14 @@ public class RotateVelocityDriveCommand extends Command {
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
     double rot = rotationSupplier.getAsDouble();
-    double rotSign = Math.copySign(1, rot);
-
-    // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented
-    // movement
-
-    drivebaseSubsystem.driveAngle(
-      new Pair<Double, Double>(x,y),drivebaseSubsystem.getTargetAngle()+5*rotSign*Math.pow(rot*rotSign, 1.5));
+    drivebaseSubsystem.drive(
+      DrivebaseSubsystem.produceChassisSpeeds(
+          isRobotRelativeForwardSupplier.getAsBoolean(),
+          // isRobotRelativeBackwardSupplier.getAsBoolean(),
+          x,
+          y,
+          rot,
+          drivebaseSubsystem.getDriverGyroscopeRotation()));
   }
 
   // Called once the command ends or is interrupted.

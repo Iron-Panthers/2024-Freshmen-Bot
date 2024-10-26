@@ -289,13 +289,13 @@ public class RobotContainer {
     
     DoubleSupplier rotationAbsolute = () -> anthony.getRightTriggerAxis() - anthony.getLeftTriggerAxis();
 
-    new Trigger(() -> Math.abs(rotationAbsolute.getAsDouble()) > 0.1)
+    new Trigger(() -> Math.abs(rotationVelocity.getAsDouble()) > 0.1)
         .whileTrue(
             new RotateVelocityDriveCommand(
                 drivebaseSubsystem,
                 translationXSupplier,
                 translationYSupplier,
-                rotationAbsolute,
+                rotationVelocity,
                 anthony.rightBumper()));
 
         new Trigger(
