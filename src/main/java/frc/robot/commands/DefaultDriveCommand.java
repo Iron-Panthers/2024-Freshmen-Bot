@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DrivebaseSubsystem;
@@ -22,42 +23,38 @@ public class DefaultDriveCommand extends Command {
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
 
-  private final BooleanSupplier isRobotRelativeForwardSupplier;
+
+  private double targetAngle;
   // private final BooleanSupplier isRobotRelativeBackwardSupplier;
 
   /** Creates a new DefaultDriveCommand. */
   public DefaultDriveCommand(
       DrivebaseSubsystem drivebaseSubsystem,
       DoubleSupplier translationXSupplier,
-      DoubleSupplier translationYSupplier,
-      BooleanSupplier isRobotRelativeForwardSupplier) {
+      DoubleSupplier translationYSupplier) {
     // BooleanSupplier isRobotRelativeBackwardSupplier) {
 
     this.drivebaseSubsystem = drivebaseSubsystem;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
-    this.isRobotRelativeForwardSupplier = isRobotRelativeForwardSupplier;
     // this.isRobotRelativeBackwardSupplier = isRobotRelativeBackwardSupplier;
 
     addRequirements(drivebaseSubsystem);
   }
+
+  @Override
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double x = translationXSupplier.getAsDouble();
     double y = translationYSupplier.getAsDouble();
-    Boolean forwardRelative = isRobotRelativeForwardSupplier.getAsBoolean();
     // Boolean backwardRelative = isRobotRelativeBackwardSupplier.getAsBoolean();
 
-    drivebaseSubsystem.drive(
-        DrivebaseSubsystem.produceChassisSpeeds(
-            forwardRelative,
-            // backwardRelative,
-            x,
-            y,
-            0,
-            drivebaseSubsystem.getDriverGyroscopeRotation()));
+    drivebaseSubsystem.driveAngle(
+            new Pair<Double, Double>(x, y),
+            drivebaseSubsystem.getTargetAngle());
   }
 
   // Called once the command ends or is interrupted.
