@@ -218,6 +218,26 @@ public class RobotContainer {
         //                         translationXSupplier,
         //                         translationYSupplier,
         //                         DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
+
+        anthony
+                .leftBumper()
+                .whileTrue(
+                        new ShootCommand(
+                                shooterSubsystem, false));
+        anthony
+                .rightBumper()
+                .whileTrue(
+                        new IntakeCommand(
+                                shooterSubsystem,false, rgbSubsystem));
+        anthony
+                .rightTrigger()
+                .whileTrue(new IntakeCommand(shooterSubsystem, true, rgbSubsystem));
+                
+        anthony
+                .leftTrigger()
+                .onTrue(
+                        new AdvancedAmpCommand(shooterSubsystem, rgbSubsystem, drivebaseSubsystem));
+
         jacob
                 .leftBumper()
                 .whileTrue(
@@ -271,7 +291,7 @@ public class RobotContainer {
         //                         translationYSupplier,
         //                         DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
 
-    jacob
+    anthony
         .a()
         .whileTrue(
             new AmpIntakeCommand(ampSubsystem, rgbSubsystem));
@@ -279,10 +299,21 @@ public class RobotContainer {
         DoubleSupplier rotation = 
                 () -> ControllerUtil.deadband(
                         (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .01);
+    anthony
+        .b()
+        .whileTrue(
+            new AmpOuttakeCommand(ampSubsystem));
+
+    jacob
+        .a()
+        .whileTrue(
+            new AmpIntakeCommand(ampSubsystem, rgbSubsystem));
+    
     jacob
         .b()
         .whileTrue(
             new AmpOuttakeCommand(ampSubsystem));
+
 
     DoubleSupplier rotationVelocity =
         () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
