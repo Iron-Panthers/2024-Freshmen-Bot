@@ -229,14 +229,6 @@ public class RobotContainer {
                 .whileTrue(
                         new IntakeCommand(
                                 shooterSubsystem,false, rgbSubsystem));
-        anthony
-                .rightTrigger()
-                .whileTrue(new IntakeCommand(shooterSubsystem, true, rgbSubsystem));
-                
-        anthony
-                .leftTrigger()
-                .onTrue(
-                        new AdvancedAmpCommand(shooterSubsystem, rgbSubsystem, drivebaseSubsystem));
 
         jacob
                 .leftBumper()
@@ -248,9 +240,6 @@ public class RobotContainer {
                 .whileTrue(
                         new IntakeCommand(
                                 shooterSubsystem,false, rgbSubsystem));
-        jacob
-                .rightTrigger()
-                .whileTrue(new IntakeCommand(shooterSubsystem, true, rgbSubsystem));
                 
         jacob
                 .leftTrigger()
@@ -281,6 +270,9 @@ public class RobotContainer {
                                         ? -Setpoints.SPEAKER_DEGREES
                                         : Setpoints.SPEAKER_DEGREES));
 
+        anthony.x()
+        .onTrue(new InstantCommand(
+            () -> {}, shooterSubsystem));
         // AMP
         // jacob
         //         .b()
@@ -294,15 +286,11 @@ public class RobotContainer {
     anthony
         .a()
         .whileTrue(
-            new AmpIntakeCommand(ampSubsystem, rgbSubsystem));
+            new AdvancedAmpCommand(shooterSubsystem, rgbSubsystem, drivebaseSubsystem));
 
         DoubleSupplier rotation = 
                 () -> ControllerUtil.deadband(
                         (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .01);
-    anthony
-        .b()
-        .whileTrue(
-            new AmpOuttakeCommand(ampSubsystem));
 
     jacob
         .a()
