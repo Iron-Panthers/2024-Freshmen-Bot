@@ -23,10 +23,6 @@ public class ShooterSubsystem extends SubsystemBase {
     lower = new TalonFX(20);
     lower.clearStickyFaults();
     upper.clearStickyFaults();
-
-
-
-
   }
 
   // Set upper speed
