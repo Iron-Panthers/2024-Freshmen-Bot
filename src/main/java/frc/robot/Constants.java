@@ -17,6 +17,8 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.Constants.Drive.Dims;
+import frc.robot.subsystems.AmpSubsystem;
+import frc.robot.subsystems.RGBSubsystem.RGBColor;
 import frc.util.CAN;
 import java.nio.file.Path;
 import java.util.List;
@@ -76,7 +78,8 @@ public final class Constants {
   public static final class Drive {
     public static final int PIGEON_PORT = 0; // placeholder
     public static final String SWERVE_CANBUS = "rio"; // placeholder
-
+    /** joystick xbox controller deadband **/
+    public static final double DEADBAND = 0.1;
     // max voltage delivered to drivebase
     // supposedly useful to limit speed for testing
     public static final double MAX_VOLTAGE = 12.0;
@@ -149,14 +152,14 @@ public final class Constants {
         public static final double STEER_GEAR_RATIO = 21.428571428571427;
         public static final Slot0Configs DRIVE_MOTOR_GAINS = new Slot0Configs().withKP(3).withKI(0).withKD(0)
             .withKS(0.32).withKV(0.11).withKA(0);
-        public static final Slot0Configs STEER_MOTOR_GAINS = new Slot0Configs().withKP(11).withKI(0).withKD(0)
+        public static final Slot0Configs STEER_MOTOR_GAINS = new Slot0Configs().withKP(22).withKI(0).withKD(0)
             .withKS(0.4).withKV(0.6).withKA(0);
         public static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT = ClosedLoopOutputType.Voltage;
         public static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT = ClosedLoopOutputType.Voltage;
-        public static final SteerFeedbackType FEEDBACK_SOURCE = SteerFeedbackType.FusedCANcoder;
+        public static final SteerFeedbackType FEEDBACK_SOURCE = SteerFeedbackType.RemoteCANcoder;
         public static final double SPEED_TWELVE_VOLTS = MAX_VELOCITY_METERS_PER_SECOND;
         public static final double SLIP_CURRENT = 0; // optional, unused rn
-        public static final boolean STEER_MOTOR_INVERTED = true;
+        public static final boolean STEER_MOTOR_INVERTED = false;
 
         public static final DriveRequestType driveRequestType = DriveRequestType.OpenLoopVoltage;
         public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagic;
@@ -168,8 +171,8 @@ public final class Constants {
         public static final int STEER_ENCODER = CAN.at(24, "module 1 steer encoder");
 
         public static final double STEER_OFFSET = IS_COMP_BOT
-            ? -0.003173828125 // comp bot offset
-            : 0.0595703125; // practice bot offset
+            ? 0.001708984375 // comp bot offset
+            : 0.001708984375; // practice bot offset
       }
 
       public static final class Module2 { // back right
@@ -178,8 +181,8 @@ public final class Constants {
         public static final int STEER_ENCODER = CAN.at(25, "module 2 steer encoder");
 
         public static final double STEER_OFFSET = IS_COMP_BOT
-            ? 0.390380859375 // comp bot offset
-            : 0.262451171875; // practice bot offset
+            ? 0.366943359375 // comp bot offset
+            : 0.366943359375; // practice bot offset
       }
 
       public static final class Module3 { // front right
@@ -188,8 +191,8 @@ public final class Constants {
         public static final int STEER_ENCODER = CAN.at(26, "module 3 steer encoder");
 
         public static final double STEER_OFFSET = IS_COMP_BOT
-            ? 0.4189453125 // comp bot offset
-            : -0.20825195312; // practice bot offset
+            ? 0.389892578125 // comp bot offset
+            : 0.389892578125; // practice bot offset
       }
 
       public static final class Module4 { // front left
@@ -198,8 +201,8 @@ public final class Constants {
         public static final int STEER_ENCODER = CAN.at(27, "module 4 steer encoder");
 
         public static final double STEER_OFFSET = IS_COMP_BOT
-            ? -0.3408203125 // comp bot offset
-            : -0.3564453125 + 180; // practice bot offset
+            ? 0.3408203125 // comp bot offset
+            : 0.3408203125; // practice bot offset
       }
     }
 
@@ -209,6 +212,31 @@ public final class Constants {
       public static final int SOURCE_DEGREES = 39;
       public static final int SPEAKER_DEGREES = 11;
       public static final int EPSILON = 3;
+    }
+  }
+  public static final class Amp {
+      public static final class Ports {
+        public static final int AMP_MOTOR_PORT = 14;
+      }
+      public static final double OUTTAKE_SPEED = -0.6;
+      public static final double INTAKE_SPEED = 0.5;
+  }
+
+
+  public static final class Lights {
+    public static final int CANDLE_ID = 34;
+    public static final int NUM_LEDS =8; //8 in candle
+
+    public static final class Colors {
+      public static final RGBColor YELLOW = new RGBColor(255, 107, 0);
+      public static final RGBColor PURPLE = new RGBColor(127, 0, 127);
+      public static final RGBColor RED = new RGBColor(255, 0, 0);
+      public static final RGBColor ORANGE = new RGBColor(255, 35, 0);
+      public static final RGBColor BLUE = new RGBColor(0, 0, 255);
+      public static final RGBColor PINK = new RGBColor(250, 35, 100);
+      public static final RGBColor MINT = new RGBColor(55, 255, 50);
+      public static final RGBColor TEAL = new RGBColor(0, 255, 255);
+      public static final RGBColor WHITE = new RGBColor(255, 255, 255);
     }
   }
 }

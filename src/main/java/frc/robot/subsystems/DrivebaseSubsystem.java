@@ -302,11 +302,16 @@ public class DrivebaseSubsystem extends SubsystemBase {
         };
   }
 
+  public double getTargetAngle() {
+    return targetAngle;
+  }
+
   private Rotation2d driverGyroOffset = Rotation2d.fromDegrees(0);
 
   /** Sets the gyro angle to zero, resetting the forward direction */
   public void zeroGyroscope() {
     driverGyroOffset = getConsistentGyroscopeRotation();
+    targetAngle = 0;
   }
 
   public void zeroGyroscopeOffset(double offsetDegrees) {

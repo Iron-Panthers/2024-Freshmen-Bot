@@ -29,7 +29,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Config;
 import frc.robot.Constants.Drive;
 import frc.robot.Constants.Drive.Setpoints;
+import frc.robot.commands.AdvancedAmpCommand;
+import frc.robot.commands.AmpIntakeCommand;
+import frc.robot.commands.AmpOuttakeCommand;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.HaltDriveCommandsCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.RotateAngleDriveCommand;
 import frc.robot.commands.RotateVectorDriveCommand;
@@ -38,6 +42,8 @@ import frc.robot.commands.ShootCommand;
 // import frc.robot.commands.SpitCommand;
 import frc.robot.commands.VibrateHIDCommand;
 import frc.robot.subsystems.DrivebaseSubsystem;
+import frc.robot.subsystems.RGBSubsystem;
+import frc.robot.subsystems.AmpSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.util.ControllerUtil;
 import frc.util.Layer;
@@ -59,7 +65,9 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
     private final DrivebaseSubsystem drivebaseSubsystem = new DrivebaseSubsystem();
+    private final AmpSubsystem ampSubsystem = new AmpSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    private final RGBSubsystem rgbSubsystem = new RGBSubsystem();
 
     /** controller 1 */
     private final CommandXboxController jacob = new CommandXboxController(1);
@@ -79,11 +87,11 @@ public class RobotContainer {
 
     private final ShuffleboardTab driverView = Shuffleboard.getTab("DriverView");
 
-    /* drive joystick "y" is passed to x because controller is inverted */
-    private final DoubleSupplier translationXSupplier = () -> (-modifyAxis(anthony.getLeftY())
-            * Drive.MAX_VELOCITY_METERS_PER_SECOND);
-    private final DoubleSupplier translationYSupplier = () -> (-modifyAxis(anthony.getLeftX())
-            * Drive.MAX_VELOCITY_METERS_PER_SECOND);
+  /* drive joystick "y" is passed to x because controller is inverted */
+  private final DoubleSupplier translationXSupplier =
+      () -> (-axisScaler(anthony.getLeftX(), anthony.getLeftY())*anthony.getLeftY() * Drive.MAX_VELOCITY_METERS_PER_SECOND);
+  private final DoubleSupplier translationYSupplier =
+      () -> (-axisScaler(anthony.getLeftX(), anthony.getLeftY())*anthony.getLeftX() * Drive.MAX_VELOCITY_METERS_PER_SECOND);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -91,9 +99,12 @@ public class RobotContainer {
     public RobotContainer() {
         //makes it so pathplanner sees what the shootCommand oes
         NamedCommands.registerCommand(
-        "ShootCommand", new ShootCommand(shooterSubsystem, false));
-        NamedCommands.registerCommand(
-        "IntakeCommand", new IntakeCommand(shooterSubsystem, false));
+        "ShootCommand", new ShootCommand(shooterSubsystem, false).withTimeout(2));
+        NamedCommands.registerCommand("HoldCOmmand", new HaltDriveCommandsCommand(drivebaseSubsystem).withTimeout(2));
+
+        NamedCommands.registerCommand("RampCommand", new IntakeCommand(shooterSubsystem,false,rgbSubsystem).withTimeout(1));
+        // NamedCommands.registerCommand(
+        // "IntakeCommand", new IntakeCommand(shooterSubsystem, false,rgbSubsystem));
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
         // Left stick Y axis -> forward and backwards movement
@@ -103,9 +114,7 @@ public class RobotContainer {
                 new DefaultDriveCommand(
                         drivebaseSubsystem,
                         translationXSupplier,
-                        translationYSupplier,
-                        // anthony.rightBumper(),
-                        anthony.leftBumper()));
+                        translationYSupplier));
 
         // pivotSubsystem.setDefaultCommand(
         // new PivotManualCommand(pivotSubsystem, () -> -jacob.getLeftY()));
@@ -201,14 +210,14 @@ public class RobotContainer {
                 .start()
                 .onTrue(new InstantCommand(drivebaseSubsystem::smartZeroGyroscope, drivebaseSubsystem));
 
-        jacob
-                .a()
-                .onTrue(
-                        new RotateAngleDriveCommand(
-                                drivebaseSubsystem,
-                                translationXSupplier,
-                                translationYSupplier,
-                                DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
+        // jacob
+        //         .a()
+        //         .onTrue(
+        //                 new RotateAngleDriveCommand(
+        //                         drivebaseSubsystem,
+        //                         translationXSupplier,
+        //                         translationYSupplier,
+        //                         DriverStation.getAlliance().get().equals(Alliance.Red) ? -40 : 40));
         jacob
                 .leftBumper()
                 .whileTrue(
@@ -218,17 +227,15 @@ public class RobotContainer {
                 .rightBumper()
                 .whileTrue(
                         new IntakeCommand(
-                                shooterSubsystem,false));
+                                shooterSubsystem,false, rgbSubsystem));
         jacob
                 .rightTrigger()
-                .whileTrue(
-                        new IntakeCommand(
-                                shooterSubsystem,true));
+                .whileTrue(new IntakeCommand(shooterSubsystem, true, rgbSubsystem));
+                
         jacob
                 .leftTrigger()
-                .whileTrue(
-                        new ShootCommand(
-                                shooterSubsystem, true));
+                .onTrue(
+                        new AdvancedAmpCommand(shooterSubsystem, rgbSubsystem, drivebaseSubsystem));
 
         // SOURCE
         anthony
@@ -255,45 +262,41 @@ public class RobotContainer {
                                         : Setpoints.SPEAKER_DEGREES));
 
         // AMP
-        jacob
-                .b()
-                .onTrue(
-                        new RotateAngleDriveCommand(
-                                drivebaseSubsystem,
-                                translationXSupplier,
-                                translationYSupplier,
-                                DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
+        // jacob
+        //         .b()
+        //         .onTrue(
+        //                 new RotateAngleDriveCommand(
+        //                         drivebaseSubsystem,
+        //                         translationXSupplier,
+        //                         translationYSupplier,
+        //                         DriverStation.getAlliance().get().equals(Alliance.Red) ? -90 : 90));
 
-        /*
-         * jacob
-         * .a()
-         * .onTrue(
-         * new RotateAngleDriveCommand(
-         * drivebaseSubsystem,
-         * translationXSupplier,
-         * translationYSupplier,
-         * DriverStation.getAlliance().get().equals(Alliance.Red) ? 90 : -90)
-         * .alongWith(new PivotAngleCommand(pivotSubsystem, 138)) // FIXME idk
-         * .alongWith(new ShooterRampUpCommand(shooterSubsystem,
-         * ShooterMode.RAMP_AMP_FRONT)));
-         */
+    jacob
+        .a()
+        .whileTrue(
+            new AmpIntakeCommand(ampSubsystem, rgbSubsystem));
 
-        DoubleSupplier rotation = exponential(
+        DoubleSupplier rotation = 
                 () -> ControllerUtil.deadband(
-                        (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .1),
-                2);
+                        (anthony.getRightTriggerAxis() + -anthony.getLeftTriggerAxis()), .01);
+    jacob
+        .b()
+        .whileTrue(
+            new AmpOuttakeCommand(ampSubsystem));
 
-        DoubleSupplier rotationVelocity = () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                * 0.8;
+    DoubleSupplier rotationVelocity =
+        () -> -rotation.getAsDouble() * Drive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.8;
+    
+    DoubleSupplier rotationAbsolute = () -> anthony.getRightTriggerAxis() - anthony.getLeftTriggerAxis();
 
-        new Trigger(() -> Math.abs(rotation.getAsDouble()) > 0)
-                .whileTrue(
-                        new RotateVelocityDriveCommand(
-                                drivebaseSubsystem,
-                                translationXSupplier,
-                                translationYSupplier,
-                                rotationVelocity,
-                                anthony.rightBumper()));
+    new Trigger(() -> Math.abs(rotationAbsolute.getAsDouble()) > 0.1)
+        .whileTrue(
+            new RotateVelocityDriveCommand(
+                drivebaseSubsystem,
+                translationXSupplier,
+                translationYSupplier,
+                rotationAbsolute,
+                anthony.rightBumper()));
 
         new Trigger(
                 () -> Util.vectorMagnitude(anthony.getRightY(), anthony.getRightX()) > Drive.ROTATE_VECTOR_MAGNITUDE)
@@ -337,21 +340,13 @@ public class RobotContainer {
                 : new WaitCommand(delay).andThen(autoSelector.getSelected());
     }
 
-    /**
-     * applies deadband and squares axis
-     *
-     * @param value the axis value to be modified
-     * @return the modified axis values
-     */
-    private static double modifyAxis(double value) {
-        // Deadband
-        value = ControllerUtil.deadband(value, 0.07);
-
-        // Square the axis
-        value = Math.copySign(value * value, value);
-
-        return value;
-    }
+  /**
+   * @return the scaler to be multipied to the x and y axises
+   */
+  private static double axisScaler(double xValue, double yValue) {
+    double radius = Math.hypot(xValue, yValue);
+    return radius < Drive.DEADBAND ? 0 : Math.pow(((radius-Drive.DEADBAND)/(radius*(1-Drive.DEADBAND))),0.75)*(0.95)+0.05;
+  }
 
     private static DoubleSupplier exponential(DoubleSupplier supplier, double exponential) {
         return () -> {
