@@ -1,22 +1,10 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.7412675566091875,
-      "y": 6.673378865276249
-    },
-    "rotation": -119.24097233347405
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "recenterPose1"
-          }
-        },
         {
           "type": "named",
           "data": {
