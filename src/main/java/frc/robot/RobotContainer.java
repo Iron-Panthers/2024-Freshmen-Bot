@@ -100,7 +100,7 @@ public class RobotContainer {
         //makes it so pathplanner sees what the shootCommand oes
         NamedCommands.registerCommand(
         "ShootCommand", new ShootCommand(shooterSubsystem, false).withTimeout(2));
-        NamedCommands.registerCommand("HoldCOmmand", new HaltDriveCommandsCommand(drivebaseSubsystem).withTimeout(2));
+        NamedCommands.registerCommand("HoldCommand", new HaltDriveCommandsCommand(drivebaseSubsystem).withTimeout(2));
 
         NamedCommands.registerCommand("RampCommand", new IntakeCommand(shooterSubsystem,false,rgbSubsystem).withTimeout(1));
         // NamedCommands.registerCommand(
